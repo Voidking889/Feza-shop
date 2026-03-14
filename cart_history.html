@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Feza Shop - Your Order History & Invoices" />
+    <title>Feza Shop - Order History</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📋</text></svg>" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --primary-black: #2d3436;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --dark-glass: rgba(0, 0, 0, 0.02);
+            --shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --bg-soft: #fbfbfc;
+        }
+
+        [data-theme="dark"] {
+            --primary-black: #f5f5f5;
+            --glass-bg: rgba(26, 26, 26, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --dark-glass: rgba(255, 255, 255, 0.04);
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --text-main: #e0e0e0;
+            --text-muted: #94a3b8;
+            --bg-soft: #0f172a;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-soft);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] body {
+            background: #121212;
+        }
+
+        /* Abstract Background Decor */
+        .bg-decor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: move 20s infinite alternate;
+        }
+
+        .circle-1 { width: 500px; height: 500px; background: var(--primary-orange); top: -150px; right: -150px; }
+        .circle-2 { width: 400px; height: 400px; background: #ff8c42; bottom: -100px; left: -100px; animation-delay: -5s; }
+
+        @keyframes move { from { transform: translate(0, 0); } to { transform: translate(60px, 60px); } }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(26, 26, 26, 0.98) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 1rem 0;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand { 
+            color: var(--primary-orange) !important; 
+            font-weight: 800; 
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link { 
+            color: white !important; 
+            font-weight: 500; 
+            margin: 0 12px; 
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active { color: var(--primary-orange) !important; }
+
+        .greeting-container {
+            display: inline-block;
+            margin-left: 15px;
+            font-size: 0.85rem;
+            color: #ff6b35;
+            padding: 4px 12px;
+            background: rgba(255, 107, 53, 0.12);
+            border: 1px dashed rgba(255, 107, 53, 0.3);
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .type-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 14px;
+            background-color: var(--primary-orange);
+            margin-left: 2px;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Hero */
+        .hero-section {
+            padding: 130px 0 50px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--text-main), var(--primary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Stats */
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 100%;
+        }
+
+        .stat-card:hover { transform: translateY(-8px); box-shadow: 0 15px 45px rgba(255, 107, 53, 0.15); }
+        .stat-icon { font-size: 2.5rem; color: var(--primary-orange); margin-bottom: 15px; }
+        .stat-number { font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
+        .stat-label { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+
+        /* Search */
+        .search-wrapper { position: relative; max-width: 500px; margin: 0 auto 50px; }
+        .search-input {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 16px 25px 16px 55px;
+            box-shadow: var(--shadow);
+            color: var(--text-main);
+            width: 100%;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .search-input:focus { outline: none; border-color: var(--primary-orange); background: white; box-shadow: 0 10px 40px rgba(255, 107, 53, 0.1); }
+        .search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); color: var(--primary-orange); font-size: 1.3rem; }
+
+        /* Glass Table */
+        .table-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table { margin-bottom: 0; }
+        .table thead th {
+            background: transparent;
+            color: var(--text-muted);
+            border-bottom: 2px solid rgba(255, 107, 53, 0.2);
+            padding: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .table tbody td {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            vertical-align: middle;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        [data-theme="dark"] .table tbody td { border-bottom-color: rgba(255,255,255,0.05); }
+
+        .order-row { transition: all 0.2s; }
+        .order-row:hover { background: var(--dark-glass); }
+
+        /* Badges & Status */
+        .order-id-badge {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        [data-theme="dark"] .order-id-badge {
+            background: #1e293b;
+            color: #cbd5e1;
+            border-color: #334155;
+        }
+
+        .amount-badge { font-weight: 700; color: var(--primary-orange); font-size: 1.05rem; }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: capitalize;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .status-delivered { 
+            background: rgba(34, 197, 94, 0.08); 
+            color: #166534; 
+            border: 1px solid rgba(34, 197, 94, 0.2); 
+        }
+        .status-transit { 
+            background: rgba(59, 130, 246, 0.08); 
+            color: #1e40af; 
+            border: 1px solid rgba(59, 130, 246, 0.2); 
+        }
+
+        [data-theme="dark"] .status-delivered { background: rgba(34, 197, 94, 0.12); color: #4ade80; border-color: rgba(74, 222, 128, 0.2); }
+        [data-theme="dark"] .status-transit { background: rgba(59, 130, 246, 0.12); color: #60a5fa; border-color: rgba(96, 165, 250, 0.2); }
+
+        /* Buttons */
+        .btn-premium {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 10px 22px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.25);
+        }
+        .btn-premium:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 107, 53, 0.35); color: white; }
+
+        .btn-outline-premium {
+            border: 2px solid var(--primary-orange);
+            color: var(--primary-orange);
+            background: transparent;
+            border-radius: 14px;
+            padding: 8px 18px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .btn-outline-premium:hover { background: var(--primary-orange); color: white; transform: translateY(-3px); }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 100px 20px; }
+        .empty-icon { font-size: 6rem; margin-bottom: 25px; opacity: 0.5; filter: grayscale(1); }
+
+        /* Animations */
+        [data-aos="fade-up"] { opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .aos-animate { opacity: 1 !important; transform: translateY(0) !important; }
+
+        @media (max-width: 992px) {
+            .hero-title { font-size: 2.5rem; }
+            .hide-tablet { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-decor">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="index.html">
+                <span>🛍️ Feza Shop</span>
+                <div id="navbarGreeting" class="greeting-container" style="display: none;"></div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="cart_history.html">Order History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Account_centre.html">Account</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section" data-aos="fade-up">
+        <div class="container">
+            <h1 class="hero-title">Your Order History</h1>
+            <p class="text-muted fw-500">Track your premium purchases and manage your digital invoices</p>
+        </div>
+    </header>
+
+    <!-- Dashboard Stats -->
+    <section class="container mb-5" data-aos="fade-up">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-box-seam"></i></div>
+                    <div class="stat-number" id="totalOrders">0</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-wallet2"></i></div>
+                    <div class="stat-number"><span class="small text-muted">TZS</span> <span id="totalSpent">0</span></div>
+                    <div class="stat-label">Total Expenditure</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="bi bi-clock-history"></i></div>
+                    <div class="stat-number" id="lastOrderDate">--</div>
+                    <div class="stat-label">Last Purchase</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search & Filters -->
+    <section class="container" data-aos="fade-up">
+        <div class="search-wrapper">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" id="orderSearch" class="search-input" placeholder="Search by Order ID or products...">
+        </div>
+    </section>
+
+    <!-- Orders Table -->
+    <section class="container mb-5" data-aos="fade-up">
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th class="hide-tablet">Products</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartHistoryBody">
+                        <!-- Data injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="noDataMessage" class="empty-state d-none">
+                <div class="empty-icon">🎨</div>
+                <h3 class="fw-800">No Orders Found</h3>
+                <p class="text-muted">It seems like you haven't started your shopping journey yet.</p>
+                <a href="index.html" class="btn btn-premium mt-3 px-5">Start Shopping Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Invoice Modal -->
+    <div class="modal fade" id="invoiceDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content glass-card p-0 border-0">
+                <div class="modal-header border-0 p-4">
+                    <div>
+                        <h4 class="fw-800 mb-1" style="color: white;">Invoice Details</h4>
+                        <p class="mb-0 small" style="opacity: 0.8;">Transaction proof for your records</p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Invoice content matching Account_centre style -->
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label class="info-label d-block mb-1">Invoice ID</label>
+                            <span class="order-id-badge" id="modalInvoiceId">-</span>
+                        </div>
+                        <div class="col-6 text-end">
+                            <label class="info-label d-block mb-1">Order Date</label>
+                            <span class="fw-700" id="modalInvoiceDate">-</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card mb-4 p-3" style="background: var(--dark-glass);">
+                        <label class="info-label mb-3 d-block">Items Purchased</label>
+                        <div id="modalItemsList" class="mb-0">
+                            <!-- Items list -->
+                        </div>
+                    </div>
+
+                    <div class="row pt-3 border-top">
+                        <div class="col-md-6 mb-4">
+                            <label class="info-label mb-2 d-block">Payment Details</label>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Method</span>
+                                <span class="fw-600" id="modalPaymentMethod">-</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">TXN ID</span>
+                                <span class="fw-600 small" id="modalTransactionId">-</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <div class="d-flex justify-content-between justify-content-md-end gap-5 mb-1">
+                                <span class="text-muted">Subtotal</span>
+                                <span class="fw-600" id="modalSubtotal">TZS 0</span>
+                            </div>
+                            <div class="d-flex justify-content-between justify-content-md-end gap-5 mb-1">
+                                <span class="text-muted">Tax (18%)</span>
+                                <span class="fw-600" id="modalTax">TZS 0</span>
+                            </div>
+                            <div class="d-flex justify-content-between justify-content-md-end gap-5 mt-2 pt-2 border-top">
+                                <span class="fw-800">Total</span>
+                                <span class="fw-800 fs-4 text-orange" id="modalTotal" style="color: var(--primary-orange);">TZS 0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-outline-premium w-100" id="downloadInvoiceBtn">
+                        <i class="bi bi-download me-2"></i>Download PDF Invoice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        // Data Handling
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavbarGreeting();
+            themeManager.init();
+            renderCartHistory();
+
+            document.getElementById('orderSearch').addEventListener('input', (e) => {
+                renderCartHistory(e.target.value);
+            });
+
+            // Trigger animations
+            setTimeout(() => {
+                document.querySelectorAll('[data-aos]').forEach(el => el.classList.add('aos-animate'));
+            }, 100);
+        });
+
+        const themeManager = {
+            init() {
+                const savedTheme = localStorage.getItem('feza-theme') || 'light';
+                this.setTheme(savedTheme);
+            },
+            setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('feza-theme', theme);
+            }
+        };
+
+        function initNavbarGreeting() {
+            const userName = localStorage.getItem('feza_user_name');
+            if (!userName) return;
+
+            const container = document.getElementById('navbarGreeting');
+            container.style.display = 'inline-block';
+            
+            const fullText = `Hi, ${userName}! 👋`;
+            let charIndex = 0;
+            container.innerHTML = '<span id="greetingText"></span><span class="type-cursor"></span>';
+            const textSpan = document.getElementById('greetingText');
+
+            function type() {
+                if (charIndex < fullText.length) {
+                    textSpan.textContent += fullText.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, 100);
+                }
+            }
+            setTimeout(type, 300);
+        }
+
+        function renderCartHistory(searchQuery = '') {
+            const cartHistory = JSON.parse(localStorage.getItem('feza-cart-history') || '[]');
+            const cartHistoryBody = document.getElementById('cartHistoryBody');
+            const noDataMessage = document.getElementById('noDataMessage');
+            
+            cartHistoryBody.innerHTML = '';
+            
+            const filtered = cartHistory.filter(order => {
+                const q = searchQuery.toLowerCase();
+                const idMatch = (order.invoice_id || order.transaction_id || '').toLowerCase().includes(q);
+                const itemMatch = order.items.some(item => item.name.toLowerCase().includes(q));
+                return idMatch || itemMatch;
+            }).reverse(); // Latest first
+
+            if (filtered.length === 0) {
+                noDataMessage.classList.remove('d-none');
+                updateStats(0, 0, '--');
+                return;
+            }
+
+            noDataMessage.classList.add('d-none');
+            
+            let totalSpent = 0;
+            filtered.forEach(order => {
+                totalSpent += (order.total || 0);
+                const orderDate = new Date(order.date);
+                
+                const hasActiveDelivery = localStorage.getItem('feza-active-delivery') === 'true';
+                const isLatest = order === cartHistory[cartHistory.length - 1];
+                const isTransit = isLatest && hasActiveDelivery;
+
+                const row = document.createElement('tr');
+                row.className = 'order-row';
+                row.innerHTML = `
+                    <td><span class="order-id-badge">${order.invoice_id || order.transaction_id || 'N/A'}</span></td>
+                    <td>
+                        <div class="fw-700">${orderDate.toLocaleDateString()}</div>
+                        <div class="small text-muted">${orderDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    </td>
+                    <td class="hide-tablet">
+                        <div class="text-truncate" style="max-width: 250px;">
+                            ${order.items.map(item => `<span class="badge bg-light text-dark fw-500 me-1">${item.quantity}x ${item.name}</span>`).join('')}
+                        </div>
+                    </td>
+                    <td><span class="amount-badge">TZS ${(order.total || 0).toLocaleString()}</span></td>
+                    <td>
+                        <span class="status-badge ${isTransit ? 'status-transit' : 'status-delivered'}">
+                            <i class="bi ${isTransit ? 'bi-truck' : 'bi-check-all'}"></i>
+                            ${isTransit ? 'In Transit' : 'Delivered'}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-premium btn-sm" onclick='showInvoiceDetails(${JSON.stringify(order)})'>
+                            <i class="bi bi-eye"></i> Details
+                        </button>
+                    </td>
+                `;
+                cartHistoryBody.appendChild(row);
+            });
+
+            const lastDate = filtered.length > 0 ? new Date(filtered[0].date).toLocaleDateString() : '--';
+            updateStats(cartHistory.length, totalSpent, lastDate);
+        }
+
+        function updateStats(count, spent, lastDate) {
+            document.getElementById('totalOrders').textContent = count;
+            document.getElementById('totalSpent').textContent = spent.toLocaleString();
+            document.getElementById('lastOrderDate').textContent = lastDate;
+        }
+
+        function showInvoiceDetails(order) {
+            window.currentOrder = order;
+            document.getElementById('modalInvoiceId').textContent = order.invoice_id || order.transaction_id || 'N/A';
+            document.getElementById('modalInvoiceDate').textContent = new Date(order.date).toLocaleString();
+            
+            const list = document.getElementById('modalItemsList');
+            list.innerHTML = order.items.map(item => `
+                <div class="d-flex justify-content-between align-items-center mb-2 px-2 py-1 bg-white rounded-3 shadow-sm">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="badge bg-dark rounded-circle" style="width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">${item.quantity}</span>
+                        <span class="fw-600">${item.name}</span>
+                    </div>
+                    <span class="text-muted fw-700">TZS ${(item.price * item.quantity).toLocaleString()}</span>
+                </div>
+            `).join('');
+
+            const sub = order.subtotal || order.items.reduce((s, i) => s + (i.price * i.quantity), 0);
+            document.getElementById('modalSubtotal').textContent = `TZS ${sub.toLocaleString()}`;
+            document.getElementById('modalTax').textContent = `TZS ${(order.tax || sub * 0.18).toLocaleString()}`;
+            document.getElementById('modalTotal').textContent = `TZS ${(order.total || sub * 1.18).toLocaleString()}`;
+            document.getElementById('modalPaymentMethod').textContent = order.payment_method || 'Online Payment';
+            document.getElementById('modalTransactionId').textContent = order.transaction_id || 'SEC-XXXX';
+
+            new bootstrap.Modal(document.getElementById('invoiceDetailsModal')).show();
+        }
+
+        document.getElementById('downloadInvoiceBtn').addEventListener('click', () => {
+            const order = window.currentOrder;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(22);
+            doc.setTextColor(255, 107, 53);
+            doc.text('FEZA SHOP INVOICE', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Invoice ID: ${order.invoice_id || order.transaction_id}`, 20, 40);
+            doc.text(`Date: ${new Date(order.date).toLocaleString()}`, 20, 46);
+            
+            const rows = order.items.map(i => [i.name, i.quantity.toString(), i.price.toLocaleString(), (i.price * i.quantity).toLocaleString()]);
+            doc.autoTable({
+                head: [['Product', 'Qty', 'Unit Price', 'Total']],
+                body: rows,
+                startY: 55,
+                headStyles: { fillColor: [255, 107, 53] }
+            });
+
+            const finalY = doc.lastAutoTable.finalY + 10;
+            doc.setFontSize(14);
+            doc.setTextColor(26, 26, 26);
+            doc.text(`Grand Total: TZS ${(order.total || 0).toLocaleString()}`, 190, finalY, { align: 'right' });
+            
+            doc.save(`FezaShop_Invoice_${order.invoice_id || 'Order'}.pdf`);
+        });
+    </script>
+</body>
+</html>

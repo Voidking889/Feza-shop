@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Feza Shop - Seller Dashboard" />
+    <title>Feza Shop - Seller Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>👨‍💼</text></svg>" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary-black: #1a1a1a;
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --light-orange: #ffb380;
+            --pure-white: #ffffff;
+            --light-gray: #f8f9fa;
+            --medium-gray: #6c757d;
+            --success-green: #28a745;
+            --warning-yellow: #ffc107;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary-black: #0a0a0a;
+            --light-gray: #121212;
+            --pure-white: #e0e0e0;
+            --medium-gray: #a0a0a0;
+            --glass-bg: rgba(26, 26, 26, 0.7);
+            --glass-border: rgba(255, 107, 53, 0.1);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            background-color: var(--light-gray);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--primary-black);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .navbar {
+            background: rgba(26, 26, 26, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            color: var(--primary-orange) !important;
+            font-weight: 700;
+        }
+
+        .stats-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-orange);
+        }
+
+        .stats-icon {
+            width: 54px;
+            height: 54px;
+            background: linear-gradient(135deg, var(--light-orange), var(--primary-orange));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: white;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .stats-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-black);
+            margin-bottom: 0.3rem;
+            letter-spacing: -1px;
+        }
+
+        [data-theme="dark"] .stats-number {
+            color: var(--pure-white);
+        }
+
+        .stats-label {
+            color: var(--medium-gray);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .premium-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header-premium {
+            background: linear-gradient(90deg, var(--primary-black), #333);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            border: none;
+        }
+
+        .orders-table th {
+            background: var(--primary-black);
+            color: white;
+            font-weight: 600;
+            padding: 1.2rem 1rem;
+        }
+
+        [data-theme="dark"] .table {
+            color: var(--pure-white);
+        }
+
+        [data-theme="dark"] .table-hover tbody tr:hover {
+            background-color: rgba(255, 107, 53, 0.05);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .status-paid {
+            background: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+
+        .charts-container {
+            padding: 1.5rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: var(--primary-orange);
+            border: none;
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--secondary-orange);
+            transform: scale(1.05);
+        }
+
+        .trending-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+            transition: background 0.2s;
+        }
+
+        .trending-item:hover {
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .trending-rank {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-orange);
+            margin-right: 1.5rem;
+            min-width: 30px;
+        }
+
+        .trending-info {
+            flex-grow: 1;
+        }
+
+        .trending-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .trending-meta {
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+        }
+
+        .csv-upload-box {
+            border: 2px dashed var(--primary-orange);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255, 107, 53, 0.02);
+        }
+
+        .csv-upload-box:hover {
+            background: rgba(255, 107, 53, 0.08);
+            border-style: solid;
+        }
+
+        .csv-icon {
+            font-size: 3rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-card { margin-bottom: 1rem; }
+            .stats-number { font-size: 1.8rem; }
+            .chart-wrapper { height: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Feza Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3">
+                        <button class="theme-toggle" id="themeToggle">
+                            <i class="bi bi-moon-stars"></i>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="refreshData">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon"><i class="bi bi-cart-check"></i></div>
+                    <div class="stats-number" id="totalOrders">0</div>
+                    <div class="stats-label">Total Orders</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon"><i class="bi bi-cash-stack"></i></div>
+                    <div class="stats-number" id="totalRevenue">TZS 0</div>
+                    <div class="stats-label">Gross Revenue</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon"><i class="bi bi-people"></i></div>
+                    <div class="stats-number" id="csvCustomerCount">0</div>
+                    <div class="stats-label">Customers (CSV)</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                    <div class="stats-number" id="conversionRate">0%</div>
+                    <div class="stats-label">Growth Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Row -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="premium-card">
+                    <div class="card-header-premium">
+                        <h5 class="mb-0"><i class="bi bi-bar-chart-line me-2"></i>Sales Performance</h5>
+                    </div>
+                    <div class="charts-container">
+                        <div class="chart-wrapper">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="premium-card">
+                    <div class="card-header-premium">
+                        <h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Trending Sizes</h5>
+                    </div>
+                    <div class="charts-container">
+                        <div class="chart-wrapper">
+                            <canvas id="sizesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <!-- Trending Goods -->
+            <div class="col-md-4">
+                <div class="premium-card">
+                    <div class="card-header-premium">
+                        <h5 class="mb-0"><i class="bi bi-lightning-charge me-2"></i>Trending Goods</h5>
+                    </div>
+                    <div id="trendingGoodsContainer">
+                        <!-- Populated by JS -->
+                        <div class="p-4 text-center text-muted">No sales data yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer CSV Import -->
+            <div class="col-md-4">
+                <div class="premium-card">
+                    <div class="card-header-premium">
+                        <h5 class="mb-0"><i class="bi bi-file-earmark-spreadsheet me-2"></i>Import Customers</h5>
+                    </div>
+                    <div class="p-4">
+                        <div class="csv-upload-box" id="csvDropZone">
+                            <i class="bi bi-cloud-arrow-up csv-icon"></i>
+                            <h6>Upload Email CSV</h6>
+                            <p class="small text-muted mb-0">Drag & drop or click to upload</p>
+                            <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                        </div>
+                        <div id="csvStatus" class="mt-3 small text-center"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Quick View -->
+            <div class="col-md-4">
+                <div class="premium-card">
+                    <div class="card-header-premium d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i>Inventory</h5>
+                        <button class="btn btn-sm btn-outline-light" onclick="exportInventory()">Export</button>
+                    </div>
+                    <div class="p-3" id="inventoryList" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="premium-card">
+            <div class="card-header-premium">
+                <h5 class="mb-0">Recent Transactions</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentOrdersBody">
+                        <!-- Orders will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+            
+
+    </div>
+
+    <!-- Restock Modal -->
+    <div class="modal fade" id="restockModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content premium-card border-0">
+                <div class="modal-header card-header-premium border-0">
+                    <h5 class="modal-title"><i class="bi bi-box-seam me-2"></i>Order Restock</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="restockForm">
+                        <input type="hidden" id="restockProductName">
+                        <input type="hidden" id="restockCurrentQty">
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Product</label>
+                            <div id="restockProductDisplay" class="h5 orange-text font-weight-bold">Product Name</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Supplier Email</label>
+                            <input type="email" class="form-control rounded-3" id="supplierEmail" placeholder="supplier@example.com" value="supplier@feza.com" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Quantity to Order</label>
+                            <input type="number" class="form-control rounded-3" id="restockQty" value="50" min="1" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-premium w-100 py-2 mt-3" id="confirmRestockBtn">
+                            <i class="bi bi-send me-2"></i>Send Purchase Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    <script>
+        let salesChart = null;
+        let sizesChart = null;
+
+        // Mock Database for Total stock levels (Baseline)
+        const MOCK_INVENTORY = {
+            'Blue Long Sleeved Shirt': 50,
+            'Orange Long Sleeved Shirt': 12,
+            'Feza Polo Shirt': 45,
+            'Sports Trouser': 8,
+            'Feza Mug': 35,
+            'Feza Pens': 100,
+            'Key Holder': 4,
+            'Feza Clock': 15
+        };
+
+        // Initialize data on page load and set up real-time updates
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            loadDashboardData();
+            initCSVUpload();
+            initRestockHandler();
+            
+            // Set up real-time updates
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'feza-cart-history' || e.key === 'feza-last-update') {
+                    loadDashboardData();
+                }
+            });
+
+            // Auto refresh every 30 seconds
+            setInterval(loadDashboardData, 30000);
+
+            // Manual refresh button
+            document.getElementById('refreshData').addEventListener('click', function(e) {
+                e.preventDefault();
+                const icon = this.querySelector('i');
+                icon.classList.add('fa-spin');
+                loadDashboardData();
+                setTimeout(() => icon.classList.remove('fa-spin'), 1000);
+            });
+        });
+
+        function initTheme() {
+            const toggle = document.getElementById('themeToggle');
+            const savedTheme = localStorage.getItem('feza-seller-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+
+            toggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('feza-seller-theme', newTheme);
+                updateThemeIcon(newTheme);
+                updateChartThemes(newTheme);
+            });
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('#themeToggle i');
+            icon.className = theme === 'light' ? 'bi bi-moon-stars' : 'bi bi-sun';
+        }
+
+        function loadDashboardData() {
+            let orders = [];
+            try {
+                orders = JSON.parse(localStorage.getItem('feza-cart-history')) || [];
+            } catch (e) { orders = []; }
+
+            updateStats(orders);
+            displayRecentOrders(orders);
+            updateInventory(orders);
+            updateTrendingGoods(orders);
+            updateCharts(orders);
+        }
+
+        function updateStats(orders) {
+            const totalOrders = orders.length;
+            const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+            
+            animateValue('totalOrders', totalOrders);
+            animateValue('totalRevenue', totalRevenue, 'TZS ');
+
+            // Calculate growth (mock logic based on last 5 orders vs total)
+            const growth = totalOrders > 0 ? (totalOrders / (totalOrders + 10) * 100).toFixed(1) : 0;
+            document.getElementById('conversionRate').textContent = `+${growth}%`;
+        }
+
+        function animateValue(id, value, prefix = '') {
+            const obj = document.getElementById(id);
+            const current = parseFloat(obj.textContent.replace(/[^\d.-]/g, '')) || 0;
+            const start = current;
+            const end = value;
+            const duration = 1000;
+            let startTimestamp = null;
+
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const currentVal = (progress * (end - start)) + start;
+                
+                if (prefix.includes('TZS')) {
+                    obj.textContent = prefix + currentVal.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+                } else {
+                    obj.textContent = Math.floor(currentVal);
+                }
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function displayRecentOrders(orders) {
+            const tbody = document.getElementById('recentOrdersBody');
+            tbody.innerHTML = '';
+            
+            const sorted = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
+            
+            sorted.forEach(order => {
+                const row = document.createElement('tr');
+                const itemsList = order.items.map(item => `${item.quantity}x ${item.name}`).join(', ');
+                
+                row.innerHTML = `
+                    <td><span class="fw-bold">#${(order.invoice_id || order.transaction_id || 'N/A').slice(-6)}</span></td>
+                    <td>${order.email || 'Anonymous'}</td>
+                    <td><small>${itemsList}</small></td>
+                    <td>TZS ${(order.total || 0).toLocaleString()}</td>
+                    <td>${new Date(order.date).toLocaleDateString()}</td>
+                    <td><span class="status-badge status-paid">Processed</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateInventory(orders) {
+            const inventoryList = document.getElementById('inventoryList');
+            const salesCount = {};
+            
+            // Calculate total sold per product
+            orders.forEach(order => {
+                order.items.forEach(item => {
+                    const baseName = Object.keys(MOCK_INVENTORY).find(key => item.name.includes(key)) || item.name;
+                    salesCount[baseName] = (salesCount[baseName] || 0) + item.quantity;
+                });
+            });
+            
+            inventoryList.innerHTML = '';
+            
+            // Build inventory view based on MOCK_INVENTORY baseline
+            Object.entries(MOCK_INVENTORY).forEach(([name, totalStock]) => {
+                const sold = salesCount[name] || 0;
+                const remaining = Math.max(0, totalStock - sold);
+                
+                let level = 'High';
+                let levelClass = 'bg-success';
+                let suggestion = '✅ Sufficient';
+                
+                if (remaining <= 5) {
+                    level = 'Critically Low';
+                    levelClass = 'bg-danger';
+                    suggestion = '🚨 RE-STOCK NOW';
+                } else if (remaining <= 15) {
+                    level = 'Low';
+                    levelClass = 'bg-warning text-dark';
+                    suggestion = '⚠️ Order Soon';
+                } else if (remaining <= 30) {
+                    level = 'Mid';
+                    levelClass = 'bg-info text-dark';
+                    suggestion = '✅ Fair';
+                }
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'trending-item d-flex align-items-center justify-content-between';
+                itemDiv.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <img src="${getProductImage(name)}" style="width: 45px; height: 45px; border-radius: 10px; object-fit: cover;" class="me-3 border shadow-sm">
+                        <div>
+                            <div class="trending-name font-weight-bold">${name}</div>
+                            <div class="trending-meta mb-1">${remaining} units left <span class="text-muted">(of ${totalStock})</span></div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge ${levelClass} status-badge py-1 px-2" style="font-size: 0.7rem;">${level}</span>
+                                <button class="btn btn-link p-0 text-decoration-none small orange-text fw-bold" style="font-size: 0.75rem" onclick='openRestockModal("${name}", ${remaining})'>
+                                    <i class="bi bi-arrow-repeat"></i> Restock
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="small fw-bold mb-1 ${remaining <= 5 ? 'text-danger animate-pulse' : 'text-muted'}">${suggestion}</div>
+                        <div class="small text-muted">${sold} sold</div>
+                    </div>
+                `;
+                inventoryList.appendChild(itemDiv);
+            });
+
+            if (Object.keys(MOCK_INVENTORY).length === 0) {
+                inventoryList.innerHTML = '<div class="p-4 text-center text-muted">No inventory data available</div>';
+            }
+        }
+
+        function updateTrendingGoods(orders) {
+            const container = document.getElementById('trendingGoodsContainer');
+            const sales = {};
+            orders.forEach(o => o.items.forEach(i => {
+                sales[i.name] = (sales[i.name] || 0) + i.quantity;
+            }));
+
+            const trending = Object.entries(sales)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            if (trending.length === 0) return;
+
+            container.innerHTML = trending.map(([name, qty], index) => `
+                <div class="trending-item">
+                    <div class="trending-rank">#${index + 1}</div>
+                    <div class="trending-info">
+                        <div class="trending-name">${name}</div>
+                        <div class="trending-meta">${qty} units sold</div>
+                    </div>
+                    <div class="badge bg-light text-dark">${qty > 5 ? '🔥 Hot' : '⭐ Top'}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateCharts(orders) {
+            updateSalesChart(orders);
+            updateSizesChart(orders);
+        }
+
+        function updateSalesChart(orders) {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            const dailySales = {};
+            
+            // Last 7 days
+            for(let i=6; i>=0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                dailySales[d.toLocaleDateString()] = 0;
+            }
+
+            orders.forEach(o => {
+                const date = new Date(o.date).toLocaleDateString();
+                if (dailySales[date] !== undefined) {
+                    dailySales[date] += o.total;
+                }
+            });
+
+            const data = {
+                labels: Object.keys(dailySales),
+                datasets: [{
+                    label: 'Revenue (TZS)',
+                    data: Object.values(dailySales),
+                    borderColor: '#ff6b35',
+                    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#ff6b35'
+                }]
+            };
+
+            if (salesChart) {
+                salesChart.data = data;
+                salesChart.update();
+            } else {
+                salesChart = new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { 
+                            y: { beginAtZero: true, grid: { display: false } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateSizesChart(orders) {
+            const ctx = document.getElementById('sizesChart').getContext('2d');
+            const sizes = { 'S': 0, 'M': 0, 'L': 0, 'XL': 0, 'XXL': 0 };
+            
+            orders.forEach(o => o.items.forEach(i => {
+                const size = i.size || 'M';
+                if (sizes[size] !== undefined) sizes[size] += i.quantity;
+            }));
+
+            const data = {
+                labels: Object.keys(sizes),
+                datasets: [{
+                    data: Object.values(sizes),
+                    backgroundColor: ['#ffb380', '#ff8c42', '#ff6b35', '#ff4d0a', '#cc3d00'],
+                    borderWidth: 0
+                }]
+            };
+
+            if (sizesChart) {
+                sizesChart.data = data;
+                sizesChart.update();
+            } else {
+                sizesChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 20 } }
+                        },
+                        cutout: '70%'
+                    }
+                });
+            }
+        }
+
+        function updateChartThemes(theme) {
+            const color = theme === 'dark' ? '#a0a0a0' : '#6c757d';
+            [salesChart, sizesChart].forEach(chart => {
+                if (chart) {
+                    chart.options.scales?.x && (chart.options.scales.x.ticks.color = color);
+                    chart.options.scales?.y && (chart.options.scales.y.ticks.color = color);
+                    chart.options.plugins.legend.labels.color = color;
+                    chart.update();
+                }
+            });
+        }
+
+        function initCSVUpload() {
+            const dropZone = document.getElementById('csvDropZone');
+            const fileInput = document.getElementById('csvFileInput');
+            const status = document.getElementById('csvStatus');
+
+            dropZone.onclick = () => fileInput.click();
+
+            dropZone.ondragover = (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = '#28a745';
+            };
+
+            dropZone.ondragleave = () => {
+                dropZone.style.borderColor = '#ff6b35';
+            };
+
+            dropZone.ondrop = (e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files[0];
+                handleCSV(file);
+            };
+
+            fileInput.onchange = (e) => {
+                handleCSV(e.target.files[0]);
+            };
+        }
+
+        function handleCSV(file) {
+            if (!file || !file.name.endsWith('.csv')) {
+                showCSVStatus('Please upload a valid CSV file', 'text-danger');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                const emails = new Set();
+                
+                lines.forEach((line, index) => {
+                    if (index === 0) return; // Skip header
+                    const columns = line.split(',');
+                    const email = columns.find(col => col.includes('@'));
+                    if (email) emails.add(email.trim());
+                });
+
+                document.getElementById('csvCustomerCount').textContent = emails.size;
+                showCSVStatus(`Successfully imported ${emails.size} unique customers`, 'text-success');
+                animateValue('csvCustomerCount', emails.size);
+            };
+            reader.readAsText(file);
+        }
+
+        function showCSVStatus(msg, className) {
+            const status = document.getElementById('csvStatus');
+            status.textContent = msg;
+            status.className = 'mt-3 small text-center ' + className;
+        }
+
+        function getProductImage(productName) {
+            const imageMap = {
+                'Blue': 'long sleeved blue.png',
+                'Orange': 'Long sleeved orange.png',
+                'Polo': 'Tshirt.png',
+                'Trouser': 'sports trouser.png',
+                'Mug': 'mug.png',
+                'Pens': 'pens.png',
+                'Key': 'key_holder.png',
+                'Clock': 'clock.png'
+            };
+            for (let key in imageMap) {
+                if (productName.includes(key)) return imageMap[key];
+            }
+            return 'assets/product-placeholder.png';
+        }
+
+        function exportInventory() {
+            const orders = JSON.parse(localStorage.getItem('feza-cart-history')) || [];
+            const sales = {};
+            orders.forEach(o => o.items.forEach(i => {
+                if (!sales[i.name]) sales[i.name] = { qty: 0, rev: 0 };
+                sales[i.name].qty += i.quantity;
+                sales[i.name].rev += (i.price * i.quantity);
+            }));
+
+            let csv = 'Product,Units Sold,Revenue (TZS)\n';
+            Object.entries(sales).forEach(([name, data]) => {
+                csv += `"${name}",${data.qty},${data.rev}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'inventory_report.csv';
+            a.click();
+        }
+        function openRestockModal(name, qty) {
+            document.getElementById('restockProductName').value = name;
+            document.getElementById('restockProductDisplay').textContent = name;
+            document.getElementById('restockCurrentQty').value = qty;
+            
+            const modalElement = document.getElementById('restockModal');
+            let modal = bootstrap.Modal.getInstance(modalElement);
+            if (!modal) modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
+
+        function initRestockHandler() {
+            document.getElementById('restockForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const btn = document.getElementById('confirmRestockBtn');
+                const productName = document.getElementById('restockProductName').value;
+                const supplierEmail = document.getElementById('supplierEmail').value;
+                const quantity = document.getElementById('restockQty').value;
+                const currentStock = document.getElementById('restockCurrentQty').value;
+
+                btn.disabled = true;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Ordering...';
+
+                try {
+                    const response = await fetch('/api/v1/restock-order', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            product_name: productName,
+                            supplier_email: supplierEmail,
+                            quantity: parseInt(quantity),
+                            current_stock: parseInt(currentStock),
+                            image_url: getProductImage(productName)
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        alert(`Restock order sent to ${supplierEmail} for ${productName}`);
+                        bootstrap.Modal.getInstance(document.getElementById('restockModal')).hide();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                } catch (err) {
+                    console.error('Restock Error:', err);
+                    alert('Could not send restock order. Check backend connection.');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FEZA Shop: Shop in Style</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Load QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        /* Set Inter font and smooth scrolling */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #0d1117; color: #e5e7eb; }
+        .section-padding { padding: 4rem 1.5rem; }
+        
+        /* Custom colors based on a dark theme and shop branding (using subtle purple/orange) */
+        .primary-color { color: #f97316; } /* Orange accent */
+        .secondary-color { color: #8b5cf6; } /* Purple accent */
+        .bg-card { background-color: #161b22; }
+        .bg-hero { background-color: #24292f; }
+        
+        /* Ensure generated QR code canvas is centered and styled */
+        #qrcode-payments canvas, #qrcode-contact canvas {
+            display: block; 
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar (Fixed Header) -->
+    <header class="sticky top-0 z-50 bg-gray-900/95 backdrop-blur-sm shadow-xl">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <a href="#" class="flex items-center space-x-2">
+                <!-- Simple Logo/Icon Placeholder -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 secondary-color" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <span class="text-xl font-bold">FEZA Shop</span>
+            </a>
+            <div class="hidden sm:block">
+                <a href="#advantage" class="text-sm font-medium hover:primary-color px-3 transition duration-150">Shop Advantage</a>
+                <a href="#technology" class="text-sm font-medium hover:primary-color px-3 transition duration-150">The Tech</a>
+                <a href="#goals" class="text-sm font-medium hover:primary-color px-3 transition duration-150">Our Goals</a>
+                <!-- UPDATED LINK TEXT: Project Info to View Web -->
+                <a href="index.html"  target="_blank" class="ml-4 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-semibold py-1.5 px-4 rounded-full transition duration-300 shadow-lg">View Web</a>
+            </div>
+            <!-- Mobile Menu Placeholder -->
+            <button class="sm:hidden text-white p-2 rounded-md hover:bg-gray-800 transition duration-150">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Section 1: Title Slide (Hero) -->
+    <section id="hero" class="bg-hero section-padding pt-24 pb-16">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
+            <div class="md:w-1/2 text-center md:text-left">
+                <h1 class="text-5xl sm:text-7xl font-extrabold leading-tight tracking-tight">
+                    FEZA SHOP: <span class="primary-color">Shop in Style</span>
+                </h1>
+                <p class="mt-4 text-xl sm:text-2xl text-gray-400 max-w-lg mx-auto md:mx-0">
+                    The **100% Student-Made** E-Commerce Solution for Feza Schools.
+                </p>
+                <a href="#club" class="inline-block mt-8 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-full transition duration-300 shadow-xl shadow-purple-900/50">
+                    Meet the Creators &darr;
+                </a>
+            </div>
+            <div class="md:w-1/2 w-full flex justify-center p-4">
+                <!-- Screenshot Placeholder -->
+                <img src="long sleeved blue.png" 
+                     alt="Screenshot of the Feza Shop website" 
+                     class="w-full max-w-md rounded-xl shadow-2xl border-4 border-gray-700/50 transform hover:scale-[1.02] transition duration-500" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/400x300/161b22/f97316?text=FEZA+SHOP+SCREENSHOT';">
+            </div>
+        </div>
+    </section>
+
+    <div class="w-full h-1 bg-gradient-to-r from-purple-600 to-fuchsia-600"></div>
+
+
+    <!-- Section 2: The Creators (Programming Club) -->
+    <section id="club" class="section-padding">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12">FEZA Shop: Built by the <span class="secondary-color">Programming Club</span></h2>
+            
+            <!-- Club Philosophy Section -->
+            <h3 class="text-2xl font-semibold text-center mt-4 mb-8 text-gray-300">Our Pillars</h3>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Column 1: The Space -->
+                <div class="bg-card p-6 rounded-xl shadow-lg border border-gray-700/50 text-center">
+                    <i data-lucide="code" class="w-10 h-10 primary-color mx-auto mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-3">The Space</h3>
+                    <p class="text-gray-400">A student-led space to **learn technology** and **turn ideas into reality** through code.</p>
+                </div>
+                <!-- Column 2: The Skills -->
+                <div class="bg-card p-6 rounded-xl shadow-lg border border-gray-700/50 text-center">
+                    <i data-lucide="lightbulb" class="w-10 h-10 primary-color mx-auto mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-3">The Skills</h3>
+                    <p class="text-gray-400">Programming teaches essential career skills: **Logic, Problem-Solving, and Creativity** for any path.</p>
+                </div>
+                <!-- Column 3: The Culture -->
+                <div class="bg-card p-6 rounded-xl shadow-lg border border-gray-700/50 text-center">
+                    <i data-lucide="users" class="w-10 h-10 primary-color mx-auto mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-3">The Culture</h3>
+                    <p class="text-gray-400">A culture of **Collaboration, Mentorship, and hands-on Project Building** for real impact.</p>
+                </div>
+            </div>
+
+            <div class="w-full h-px bg-gray-700 my-16"></div>
+
+            <!-- Core Team Section with Input Slots - UPDATED NAMES AND ROLES -->
+            <h2 class="text-4xl font-bold text-center mb-12">Meet the <span class="primary-color">Core Team</span></h2>
+            <p class="text-center text-gray-400 mb-10 max-w-3xl mx-auto">
+                These are the key members who dedicated their skills to launching and maintaining the FEZA Shop e-commerce platform.
+            </p>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Team Slot 1: Lead Developer -->
+                <div class="bg-card p-6 rounded-xl shadow-2xl border border-gray-700 text-center">
+                    <!-- Image Placeholder -->
+                    <img src="https://placehold.co/100x100/374151/e5e7eb?text=Avatar" alt="Team Member Avatar" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-fuchsia-500">
+                    <!-- Name Slot -->
+                    <h4 class="text-xl font-bold text-white mb-1">BARAKA SAID</h4>
+                    <!-- Role Slot -->
+                    <p class="text-fuchsia-400 font-medium">Senior Lead Developer</p>
+                    <p class="text-gray-500 mt-2 text-sm italic">"Focusing on the back-end logic was a great challenge."</p>
+                </div>
+                
+                <!-- Team Slot 2: UI/UX Design -->
+                <div class="bg-card p-6 rounded-xl shadow-2xl border border-gray-700 text-center">
+                    <!-- Image Placeholder -->
+                    <img src="https://placehold.co/100x100/374151/e5e7eb?text=Avatar" alt="Team Member Avatar" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-fuchsia-500">
+                    <!-- Name Slot -->
+                    <h4 class="text-xl font-bold text-white mb-1">FARHAN SUMRA & RONALDSON URIO</h4>
+                    <!-- Role Slot -->
+                    <p class="text-fuchsia-400 font-medium">UI/UX Design Leads</p>
+                    <p class="text-gray-500 mt-2 text-sm italic">"Ensuring the site is easy to use on a phone was our priority."</p>
+                </div>
+
+                <!-- Team Slot 3: Testing & Content -->
+                <div class="bg-card p-6 rounded-xl shadow-2xl border border-gray-700 text-center">
+                    <!-- Image Placeholder -->
+                    <img src="https://placehold.co/100x100/374151/e5e7eb?text=Avatar" alt="Team Member Avatar" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-fuchsia-500">
+                    <!-- Name Slot -->
+                    <h4 class="text-xl font-bold text-white mb-1">ABDUL-RAHIM SADATH</h4>
+                    <!-- Role Slot -->
+                    <p class="text-fuchsia-400 font-medium">Testing & Content Lead</p>
+                    <p class="text-gray-500 mt-2 text-sm italic">"I made sure the payment links worked flawlessly for all users."</p>
+                </div>
+            </div>
+
+            <p class="text-center italic mt-16 text-gray-500 text-lg font-medium">
+                We Code. We Create. We Impact Feza Schools.
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 3: The Advantage -->
+    <section id="advantage" class="section-padding bg-gray-800/20">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12">The <span class="primary-color">Feza Shop</span> Advantage</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Benefit 1: Convenience -->
+                <div class="p-6 bg-card rounded-xl border-t-4 border-fuchsia-500 shadow-2xl">
+                    <i data-lucide="clock" class="w-8 h-8 secondary-color mb-3"></i>
+                    <h3 class="text-2xl font-semibold mb-2">Ultimate Convenience</h3>
+                    <p class="text-gray-400">Order uniforms and supplies **24/7 from home**. No rushing, no limited supply times, just shopping on your schedule.</p>
+                </div>
+                <!-- Benefit 2: Compliance -->
+                <div class="p-6 bg-card rounded-xl border-t-4 border-fuchsia-500 shadow-2xl">
+                    <i data-lucide="check" class="w-8 h-8 secondary-color mb-3"></i>
+                    <h3 class="text-2xl font-semibold mb-2">Guaranteed Compliance</h3>
+                    <p class="text-gray-400">All items are **pre-approved** and meet all school standards, ensuring your child has the exact, right gear.</p>
+                </div>
+                <!-- Benefit 3: Peace of Mind -->
+                <div class="p-6 bg-card rounded-xl border-t-4 border-fuchsia-500 shadow-2xl">
+                    <i data-lucide="refresh-ccw" class="w-8 h-8 secondary-color mb-3"></i>
+                    <h3 class="text-2xl font-semibold mb-2">Peace of Mind</h3>
+                    <p class="text-gray-400">Simple online size charts and a **straightforward return/exchange policy** if an item doesn't fit right.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Payments & CTA -->
+    <section id="payments" class="section-padding">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12">Easy Shopping & <span class="primary-color">Secure Payments</span></h2>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-12 bg-card p-8 rounded-2xl shadow-2xl border border-gray-700/50">
+                
+                <!-- Payment Options List -->
+                <div class="md:w-1/2 w-full space-y-4">
+                    <h3 class="text-2xl font-semibold mb-4 flex items-center">
+                        <!-- UPDATED HEADER TEXT -->
+                        <i data-lucide="banknote" class="w-6 h-6 mr-3 secondary-color"></i> Seamless International Payments
+                    </h3>
+                    <ul class="grid grid-cols-2 gap-y-2 text-lg">
+                        <li class="flex items-center"><span class="mr-2 primary-color font-bold">&bull;</span> M-PESA</li>
+                        <li class="flex items-center"><span class="mr-2 primary-color font-bold">&bull;</span> Halopesa</li>
+                        <li class="flex items-center"><span class="mr-2 primary-color font-bold">&bull;</span> Airtel Money</li>
+                        <li class="flex items-center"><span class="mr-2 primary-color font-bold">&bull;</span> MIXX by YAS</li>
+                        <li class="flex items-center"><span class="mr-2 primary-color font-bold">&bull;</span> NMB Bank</li>
+                        <li class="flex items-center"><span class="mr-2 primary-color font-bold">&bull;</span> CRDB Bank</li>
+                        <!-- NEW PAYMENT OPTION ADDED -->
+                        <li class="flex items-center"><span class="mr-2 primary-color font-bold">&bull;</span> DEBIT/CREDIT PAYMENTS</li>
+                    </ul>
+                </div>
+
+                <!-- QR Code CTA - Dynamically generated QR Code -->
+                <div class="md:w-1/2 w-full flex flex-col items-center justify-center p-6 bg-gray-900/40 rounded-xl">
+                    <!-- UPDATED QR CODE TITLE -->
+                    <h3 class="text-2xl font-semibold mb-4 text-center">View page</h3>
+                    <!-- QR Code Container - JavaScript will inject the canvas here -->
+                    <div id="qrcode-payments" class="w-36 h-36 p-1 mb-4 mx-auto flex items-center justify-center bg-white border-4 border-fuchsia-500 rounded-lg">
+                        <!-- QR code canvas will be generated here -->
+                    </div>
+                    
+                    <!-- Link changed to point internally -->
+                    <a href="#technology" class="text-lg font-medium secondary-color hover:underline">
+                        Review the Technology
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Section 5: The Technology -->
+    <section id="technology" class="section-padding bg-gray-800/20">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12"><span class="secondary-color">100% Student-Made</span> Technology</h2>
+            <p class="text-center text-xl text-gray-400 mb-10 max-w-3xl mx-auto">
+                FEZA Shop is built and maintained entirely by the Programming Club, utilizing core web technologies for a robust, secure, and user-friendly experience.
+            </p>
+            <div class="grid lg:grid-cols-3 gap-10">
+                <!-- HTML Card -->
+                <div class="bg-card p-8 rounded-xl shadow-xl border border-gray-700/50 hover:border-purple-500 transition duration-300">
+                    <i data-lucide="brackets" class="w-12 h-12 text-blue-400 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-3">HTML (Structure)</h3>
+                    <p class="text-gray-400">Defines the entire structure and content: from the navigation bar and product layout to the hero section, cart modal, and footer.</p>
+                </div>
+                <!-- CSS Card -->
+                <div class="bg-card p-8 rounded-xl shadow-xl border border-gray-700/50 hover:border-purple-500 transition duration-300">
+                    <i data-lucide="palette" class="w-12 h-12 text-pink-400 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-3">CSS (Style)</h3>
+                    <p class="text-gray-400">Defines the website's visual presentation, styling HTML elements by setting colors, fonts, layout, and responsiveness for a cohesive UI.</p>
+                </div>
+                <!-- JavaScript Card -->
+                <div class="bg-card p-8 rounded-xl shadow-xl border border-gray-700/50 hover:border-purple-500 transition duration-300">
+                    <i data-lucide="shopping-cart" class="w-12 h-12 text-yellow-400 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-3">JavaScript (Function)</h3>
+                    <p class="text-gray-400">Manages dynamic functionality and state, specifically used here to **save and retrieve the user's shopping cart** data securely.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Strategic Goals -->
+    <section id="goals" class="section-padding">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12">Our <span class="primary-color">Strategic Goals</span>: Why We Built Feza Shop</h2>
+            <div class="space-y-12">
+                <!-- Goal 1 -->
+                <div class="flex flex-col lg:flex-row items-center bg-card p-6 rounded-xl shadow-xl">
+                    <div class="flex-shrink-0 mb-4 lg:mb-0 lg:mr-8 p-4 bg-purple-600/20 rounded-full">
+                        <i data-lucide="zap" class="w-8 h-8 secondary-color"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-2xl font-semibold mb-2">1. Streamline the Supply Chain</h3>
+                        <p class="text-gray-400">We eliminate the hassle of physical trips and confusing supply lists by **centralizing all approved school and club gear online**. Shop quickly and confidently, any time.</p>
+                    </div>
+                </div>
+                <!-- Goal 2 -->
+                <div class="flex flex-col lg:flex-row items-center bg-card p-6 rounded-xl shadow-xl">
+                    <div class="flex-shrink-0 mb-4 lg:mb-0 lg:mr-8 p-4 bg-purple-600/20 rounded-full">
+                        <i data-lucide="dollar-sign" class="w-8 h-8 secondary-color"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-2xl font-semibold mb-2">2. Ensure Transparency & Value</h3>
+                        <p class="text-gray-400">Our site provides **clear, upfront pricing** and secure digital payment options. This transparency, combined with occasional online-only deals, ensures you receive the best value.</p>
+                    </div>
+                </div>
+                <!-- Goal 3 -->
+                <div class="flex flex-col lg:flex-row items-center bg-card p-6 rounded-xl shadow-xl">
+                    <div class="flex-shrink-0 mb-4 lg:mb-0 lg:mr-8 p-4 bg-purple-600/20 rounded-full">
+                        <i data-lucide="family" class="w-8 h-8 secondary-color"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h3 class="text-2xl font-semibold mb-2">3. Provide Accessible Convenience</h3>
+                        <p class="text-gray-400">The website is built around your busy schedule, allowing you to order in three minutes, giving you **peace of mind** that your child will have the exact, approved items they need.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Thank You & Contact -->
+    <section id="contact" class="section-padding bg-hero text-center border-t border-gray-700">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-5xl font-extrabold mb-4">Thank You!</h2>
+            <p class="text-xl text-gray-400 mb-8">Support the students and shop for your school needs today.</p>
+            
+            <div class="flex flex-col items-center">
+                <!-- QR Code Container - JavaScript will inject the canvas here -->
+                <div id="qrcode-contact" class="w-40 h-40 bg-white p-2 rounded-xl border-8 border-fuchsia-500 shadow-2xl">
+                    <!-- QR code canvas will be generated here -->
+                </div>
+                
+                <!-- Link changed to point internally -->
+                <a href="#advantage" class="mt-6 text-3xl font-bold primary-color hover:underline">
+                    View Project Summary
+                </a>
+            </div>
+            
+            <p class="mt-10 text-lg text-gray-500">Presented by the <span class="secondary-color font-semibold">Feza Programming Club</span></p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 py-4">
+        <div class="max-w-7xl mx-auto text-center text-sm text-gray-500">
+            <p>&copy; 2025 FEZA Shop. We Code. We Create. We Impact Feza Schools.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Target URL for the QR code - Points to the #club section since the shop is offline.
+        const shopUrl = "#club"; 
+
+        // Function to generate the QR code
+        function generateQRCode(elementId, url, width, height) {
+            // Check if the QRcode object is available
+            if (typeof QRCode !== 'undefined') {
+                // Clear the container before generating a new QR code (important if the function is called multiple times)
+                const container = document.getElementById(elementId);
+                if (container) {
+                    container.innerHTML = '';
+                    new QRCode(container, {
+                        text: url,
+                        width: width,
+                        height: height,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                }
+            } else {
+                console.error("QRCode library not loaded.");
+            }
+        }
+
+        window.onload = function() {
+            // 1. Initialize Lucide icons
+            lucide.createIcons();
+
+            // 2. Generate the QR code for the Payments/CTA section (points to #club)
+            generateQRCode('qrcode-payments', shopUrl, 128, 128);
+
+            // 3. Generate the QR code for the Contact section (points to #club)
+            generateQRCode('qrcode-contact', shopUrl, 128, 128);
+        };
+    </script>
+</body>
+</html>

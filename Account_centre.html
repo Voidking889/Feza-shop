@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Feza Shop - Account Centre" />
+    <title>Feza Shop - My Account</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>👤</text></svg>" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --primary-black: #1a1a1a;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --dark-glass: rgba(0, 0, 0, 0.05);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary-black: #f5f5f5;
+            --glass-bg: rgba(30, 30, 30, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --dark-glass: rgba(255, 255, 255, 0.05);
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="dark"] body {
+            background: #121212;
+            color: #f5f5f5;
+        }
+
+        [data-theme="dark"] .bg-decor .circle { opacity: 0.1; }
+        [data-theme="dark"] .order-icon { background: #2d2d2d; }
+        [data-theme="dark"] .info-label { color: #a0a0a0; }
+        [data-theme="dark"] .text-muted { color: #888 !important; }
+        [data-theme="dark"] .logout-btn { background: #442222; color: #ffbaba; }
+        [data-theme="dark"] .status-delivered { background: #1b3821; color: #81c784; }
+        [data-theme="dark"] .status-pending { background: #3e361b; color: #ffd54f; }
+
+        /* Wallet Specific Styles */
+        .wallet-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            color: white !important;
+        }
+        .wallet-balance {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 10px 0;
+            background: linear-gradient(45deg, #fff, #ff6b35);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .wallet-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            font-weight: 600;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+            color: var(--primary-black);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Abstract Background Decor */
+        .bg-decor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: move 20s infinite alternate;
+        }
+
+        .circle-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary-orange);
+            top: -100px;
+            right: -100px;
+        }
+
+        .circle-2 {
+            width: 300px;
+            height: 300px;
+            background: #ff8c42;
+            bottom: -50px;
+            left: -50px;
+            animation-delay: -5s;
+        }
+
+        @keyframes move {
+            from { transform: translate(0, 0); }
+            to { transform: translate(50px, 50px); }
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            color: var(--primary-orange) !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: white !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-orange) !important;
+        }
+
+        /* Account Header */
+        .account-header {
+            padding-top: 120px;
+            padding-bottom: 40px;
+            text-align: center;
+        }
+
+        .profile-pic-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .profile-pic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: var(--shadow);
+        }
+
+        .edit-pic-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--primary-orange);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .edit-pic-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .greeting-animation {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--primary-black), var(--primary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            color: var(--primary-orange);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Info Rows */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-weight: 600;
+        }
+
+        /* Order List */
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--dark-glass);
+            border-radius: 16px;
+            margin-bottom: 15px;
+        }
+
+        .order-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--primary-orange);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-delivered { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+
+        /* Buttons */
+        .btn-premium {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+
+        .logout-btn {
+            background: #f8d7da;
+            color: #721c24;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f5c6cb;
+            transform: translateY(-2px);
+        }
+
+        /* Typing cursor */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 40px;
+            background-color: var(--primary-orange);
+            margin-left: 5px;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .greeting-animation { font-size: 1.8rem; }
+            .account-header { padding-top: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-decor">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="index.html">🛍️ Feza Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cart_history.html">Order History</a></li>
+                </ul>
+                <div class="d-flex">
+                    <button class="btn btn-outline-light rounded-pill px-4" onclick="handleLogout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="account-header">
+            <div class="profile-pic-container">
+                <img src="https://ui-avatars.com/api/?name=User&background=ff6b35&color=fff&size=200" id="profilePic" class="profile-pic" alt="Profile">
+                <div class="edit-pic-btn"><i class="bi bi-camera"></i></div>
+            </div>
+            <h1 class="greeting-animation"><span id="typewriter"></span><span class="cursor"></span></h1>
+            <p class="text-muted">Manage your account settings and track your orders</p>
+        </header>
+
+        <div class="row g-4 mb-5">
+            <!-- Profile Info -->
+            <div class="col-lg-4">
+                <div class="glass-card">
+                    <div class="card-icon"><i class="bi bi-person-badge"></i></div>
+                    <h2 class="section-title">My Profile</h2>
+                    <div class="info-row">
+                        <span class="info-label">Display Name</span>
+                        <span class="info-value" id="userName">User Name</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Account Type</span>
+                        <span class="info-value">Premium Member</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Member Since</span>
+                        <span class="info-value">March 2026</span>
+                    </div>
+                    <button class="btn btn-premium w-100 mt-4" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="col-lg-5">
+                <div class="glass-card">
+                    <div class="card-icon"><i class="bi bi-bag-check"></i></div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="section-title mb-0">Recent Orders</h2>
+                        <a href="cart_history.html" class="text-decoration-none" style="color: var(--primary-orange); font-weight: 600;">View All</a>
+                    </div>
+                    
+                    <div id="orderList">
+                        <!-- Mock Orders -->
+                        <div class="order-item">
+                            <div class="order-icon"><i class="bi bi-laptop"></i></div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-0">Premium T-shirt</h6>
+                                    <span class="status-badge status-delivered">Delivered</span>
+                                </div>
+                                <small class="text-muted">Ordered on March 10, 2026</small>
+                            </div>
+                        </div>
+                        <div class="order-item">
+                            <div class="order-icon"><i class="bi bi-headphones"></i></div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-0">Key Holder</h6>
+                                    <span class="status-badge status-pending">In Transit</span>
+                                </div>
+                                <small class="text-muted">Ordered on March 11, 2026</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings & Wallet -->
+            <div class="col-lg-3">
+                <!-- Parental Wallet -->
+                <div class="glass-card wallet-card mb-4">
+                    <div class="wallet-label">Parental Wallet</div>
+                    <div class="wallet-balance">TZS <span id="walletBalanceDisplay">0.00</span></div>
+                    <p class="small mb-3" style="opacity: 0.7;">Secure funds managed by parents for school essentials.</p>
+                    <button class="btn btn-premium w-100" data-bs-toggle="modal" data-bs-target="#topUpModal">
+                        <i class="bi bi-plus-circle me-2"></i>Top Up Funds
+                    </button>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-icon"><i class="bi bi-gear"></i></div>
+                    <h2 class="section-title">Quick Settings</h2>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                            <label class="form-check-label" for="emailNotifications">Email Notifications</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="darkMode" onchange="themeManager.toggle()">
+                            <label class="form-check-label" for="darkMode">Dark Mode</label>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-top">
+                        <button class="logout-btn w-100" onclick="handleLogout()">
+                            <i class="bi bi-box-arrow-right me-2"></i>Logout Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-card p-0 border-0">
+                <div class="modal-header border-0 p-4">
+                    <h5 class="modal-title section-title mb-0" id="editProfileModalLabel">Edit My Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editProfileForm">
+                        <div class="mb-3">
+                            <label class="info-label mb-2">Display Name</label>
+                            <input type="text" class="form-control rounded-4 p-3" id="editUserName" placeholder="Your Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="info-label mb-2">Profile Picture URL (Optional)</label>
+                            <input type="url" class="form-control rounded-4 p-3" id="editProfilePic" placeholder="https://...">
+                        </div>
+                        <button type="submit" class="btn btn-premium w-100 mt-3 p-3">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Up Modal -->
+    <div class="modal fade" id="topUpModal" tabindex="-1" aria-labelledby="topUpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-card p-0 border-0">
+                <div class="modal-header border-0 p-4">
+                    <h5 class="modal-title section-title mb-0" id="topUpModalLabel">Top Up Wallet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="topUpInitial">
+                        <form id="topUpRequestForm">
+                             <div class="mb-3">
+                                <label class="info-label mb-2">Billing Email (PIN Recipient)</label>
+                                <input type="email" class="form-control rounded-4 p-3" id="topUpEmail" placeholder="parent@example.com" required>
+                                <small class="text-muted">A security PIN will be sent to this email to authorize funds.</small>
+                            </div>
+                            <div class="mb-3">
+                                <label class="info-label mb-2">Amount (TZS)</label>
+                                <input type="number" class="form-control rounded-4 p-3" id="topUpAmount" placeholder="e.g. 50000" required>
+                            </div>
+                            <button type="submit" class="btn btn-premium w-100 mt-3 p-3" id="requestPinBtn">Send Security PIN</button>
+                        </form>
+                    </div>
+
+                    <div id="topUpVerify" class="d-none">
+                        <div class="alert alert-info py-2 small mb-3">
+                            <i class="bi bi-envelope-check me-2"></i>PIN sent! Check your inbox.
+                        </div>
+                        <form id="topUpVerifyForm">
+                            <div class="mb-3">
+                                <label class="info-label mb-2">Enter 6-Digit PIN</label>
+                                <input type="text" class="form-control rounded-4 p-3 text-center fw-bold fs-4" id="topUpPin" placeholder="000000" maxlength="6" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="info-label mb-2">Method</label>
+                                <select class="form-select rounded-4 p-3" id="topUpMethod">
+                                    <option value="mobile_money">Mobile Money</option>
+                                    <option value="card">Card Payment</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-premium w-100 mt-3 p-3">Submit & Top Up</button>
+                            <button type="button" class="btn btn-link w-100 mt-2 text-muted" onclick="walletUI.resetModal()">Edit Details</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data Handling
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = localStorage.getItem('feza_user_name') || 'Guest';
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('editUserName').value = userName;
+            
+            const savedPic = localStorage.getItem('feza_profile_pic');
+            if (savedPic) {
+                document.getElementById('profilePic').src = savedPic;
+                document.getElementById('editProfilePic').value = savedPic;
+            } else {
+                document.getElementById('profilePic').src = `https://ui-avatars.com/api/?name=${userName}&background=ff6b35&color=fff&size=200`;
+            }
+            
+            // Initialize Theme
+            themeManager.init();
+            
+            // Initialize Wallet
+            walletManager.init();
+            
+            // Start Typewriter
+            initTypewriter(userName);
+
+            // Handle Profile Save
+            document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const newName = document.getElementById('editUserName').value;
+                const newPic = document.getElementById('editProfilePic').value;
+                
+                localStorage.setItem('feza_user_name', newName);
+                if (newPic) localStorage.setItem('feza_profile_pic', newPic);
+                
+                alert('Profile updated successfully!');
+                window.location.reload();
+            });
+
+            // Handle PIN Request
+            document.getElementById('topUpRequestForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const btn = document.getElementById('requestPinBtn');
+                const email = document.getElementById('topUpEmail').value;
+                
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending PIN...';
+
+                try {
+                    const response = await fetch('/api/v1/request-topup-pin', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await response.json();
+                    
+                    if (data.status === 'success') {
+                        document.getElementById('topUpInitial').classList.add('d-none');
+                        document.getElementById('topUpVerify').classList.remove('d-none');
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                } catch (err) {
+                    alert('Server connection failed. Make sure the backend is running.');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Send Security PIN';
+                }
+            });
+
+            // Handle Top Up Verification
+            document.getElementById('topUpVerifyForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('topUpEmail').value;
+                const pin = document.getElementById('topUpPin').value;
+                const amount = parseFloat(document.getElementById('topUpAmount').value);
+
+                try {
+                    const response = await fetch('/api/v1/verify-topup-pin', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ email, pin })
+                    });
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        walletManager.addFunds(amount);
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('topUpModal'));
+                        modal.hide();
+                        alert(`Verified! Successfully topped up TZS ${amount.toLocaleString()}!`);
+                        walletUI.resetModal();
+                    } else {
+                        alert('Invalid PIN: ' + data.message);
+                    }
+                } catch (err) {
+                    alert('Verification failed. Try again.');
+                }
+            });
+        });
+
+        // UI Helpers
+        const walletUI = {
+            resetModal() {
+                document.getElementById('topUpInitial').classList.remove('d-none');
+                document.getElementById('topUpVerify').classList.add('d-none');
+                document.getElementById('topUpRequestForm').reset();
+                document.getElementById('topUpVerifyForm').reset();
+            }
+        };
+
+        // Wallet Manager
+        const walletManager = {
+            init() {
+                const balance = parseFloat(localStorage.getItem('feza_wallet_balance') || '0');
+                this.updateUI(balance);
+            },
+            addFunds(amount) {
+                const current = parseFloat(localStorage.getItem('feza_wallet_balance') || '0');
+                const newBalance = current + amount;
+                localStorage.setItem('feza_wallet_balance', newBalance.toString());
+                this.updateUI(newBalance);
+            },
+            updateUI(balance) {
+                document.getElementById('walletBalanceDisplay').textContent = balance.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+        };
+
+        // Theme Manager
+        const themeManager = {
+            init() {
+                const savedTheme = localStorage.getItem('feza-theme') || 'light';
+                this.setTheme(savedTheme);
+                
+                const toggle = document.getElementById('darkMode');
+                if (toggle) toggle.checked = savedTheme === 'dark';
+            },
+            setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('feza-theme', theme);
+            },
+            toggle() {
+                const current = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = current === 'light' ? 'dark' : 'light';
+                this.setTheme(newTheme);
+            }
+        };
+
+        // Typewriter Animation
+        function initTypewriter(name) {
+            const textElement = document.getElementById('typewriter');
+            const phrases = [
+                `Welcome, ${name}!`,
+                `Feza Premium Member`,
+                `Ready to Shop?`,
+                `Your Account Hub`
+            ];
+            
+            let phraseIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            let typeSpeed = 100;
+
+            function type() {
+                const currentPhrase = phrases[phraseIndex];
+                
+                if (isDeleting) {
+                    textElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                    charIndex--;
+                    typeSpeed = 50;
+                } else {
+                    textElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                    charIndex++;
+                    typeSpeed = 100;
+                }
+
+                if (!isDeleting && charIndex === currentPhrase.length) {
+                    isDeleting = true;
+                    typeSpeed = 2000; // Pause at end
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length;
+                    typeSpeed = 500;
+                }
+
+                setTimeout(type, typeSpeed);
+            }
+
+            type();
+        }
+
+        function handleLogout() {
+            if(confirm('Are you sure you want to log out?')) {
+                localStorage.removeItem('feza_user_name');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

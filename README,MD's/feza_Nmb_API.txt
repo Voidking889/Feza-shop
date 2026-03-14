@@ -1,0 +1,55 @@
+Consumer ID:abed6071-58d4-4a73-a672-0032ff6663b9
+
+Application Type:Public
+
+Application Name:Feza_pay
+
+User redirect URL:
+Developer Email:kideinstein33@gmail.com
+
+App Description:A school payment platform to enable e-shopping
+
+Client certificate:None
+
+Consumer Key:5ktj4jhx2eeg453vmj214vt4iunhm35bpducszwi
+
+Consumer Secret:ryhtu05mniyse3e0zf5pzolpfoa3j2wk0punwjhl
+
+OAuth 1.0a Endpoint:https://obp-api-sandbox.nmbbank.co.tz/oauth/initiate
+
+OAuth 1.0a Documentation:How to use OAuth for OpenBankProject
+
+Direct Login Endpoint:https://obp-api-sandbox.nmbbank.co.tz/my/logins/direct
+
+Direct Login Documentation:
+
+
+1. 💳 The "Parental Wallet" (Credit System)
+Instead of students using cards or mobile money for every transaction, parents can "Top Up" a student's account at the start of the month.
+
+Why parents love it: They can manage a monthly budget for their child.
+Implementation: Add a "Wallet Balance" to the 
+
+Account_centre.html
+ and a "Top Up" feature in the backend.
+2. 🔗 "Share Cart for Parent to Pay"
+Students can fill a cart (e.g., with expensive textbooks or uniforms) and click a button that generates a Unique Payment Link.
+
+Why parents love it: They get to review exactly what the student is buying before paying for it remotely via Stripe or M-Pesa.
+Implementation: A button in the cart that saves the cart state to the database and provides a URL like fezashop.com/pay/CART_ID.
+3. 📊 Weekly Spending Reports
+An automated email sent to the parent every Sunday summarizing what the student bought.
+
+Why parents love it: It helps them monitor habits (e.g., "Too many snacks, not enough stationery").
+Implementation: A background task in 
+
+main.py
+ that aggregates cart_history and sends a summary email using your new template.
+4. 📂 Premium Order Categories (Uniforms & Stationery)
+Add a dedicated "School Essentials" section with official school packages.
+
+Why parents love it: It makes back-to-school shopping a 1-click process.
+Implementation: A new category filter in 
+
+index.html
+ specifically for "Uniforms" or "Book Bundles."

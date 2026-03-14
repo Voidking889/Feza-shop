@@ -1,0 +1,34 @@
+# Progressive Web App (PWA) Integration
+
+Enable Feza Shop to be installable on mobile devices (Android/iOS) and desktop by implementing core Progressive Web App features.
+
+## Proposed Changes
+
+### [manifest.json](file:///f:/Feza_shop%20-%20Copy%20%28using%20python%29/manifest.json)
+#### [NEW] [manifest.json](file:///f:/Feza_shop%20-%20Copy%20%28using%20python%29/manifest.json)
+- Create a standard Web App Manifest.
+- Define `short_name`: "Feza Shop", `name`: "Feza Shop Application".
+- Set [display](file:///f:/Feza_shop%20-%20Copy%20%28using%20python%29/seller_dashboard.html#552-573) constraints to "standalone" to remove browser UI when installed.
+- Configure theme and background colors to match Feza's branding (`#ff6b35`).
+- Add appropriate high-resolution icon definitions (e.g., placeholder or SVG-based generic icons for 192x192 and 512x512).
+
+### [sw.js](file:///f:/Feza_shop%20-%20Copy%20%28using%20python%29/sw.js)
+#### [NEW] [sw.js](file:///f:/Feza_shop%20-%20Copy%20%28using%20python%29/sw.js)
+- Create a basic Service Worker.
+- Implement the "install" event to cache core static assets ([index.html](file:///f:/Feza_shop%20-%20Copy%20%28using%20python%29/index.html), `style.css`, etc.) for offline resilience.
+- Implement the "fetch" event to serve cached content or fetch from the network (Cache-First or Network-First strategy).
+
+### [index.html](file:///f:/Feza_shop%20-%20Copy%20%28using%20python%29/index.html)
+#### [MODIFY] [index.html](file:///f:/Feza_shop%20-%20Copy%20%28using%20python%29/index.html)
+- Add `<link rel="manifest" href="/manifest.json">` to the `<head>`.
+- Add theme-color meta tag `<meta name="theme-color" content="#ff6b35">`.
+- Add JavaScript snippet to register `/sw.js` on page load if `serviceWorker` is supported by the browser.
+
+## Verification Plan
+### Automated Tests
+- N/A
+
+### Manual Verification
+- Open Chrome DevTools -> Application tab -> Manifest. Verify that the properties are read correctly.
+- Open Chrome DevTools -> Application tab -> Service Workers. Verify that `sw.js` is registered and running.
+- (Optional but recommended) Serve the application via HTTPS (or localhost) and check if the "Install App" icon appears in the browser address bar.

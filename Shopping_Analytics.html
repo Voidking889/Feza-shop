@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Feza Shop - Cart History Dashboard" />
+    <title>Feza Shop - Cart History</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📊</text></svg>" />
+    <!-- Icon can be changed to a cart if desired -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-black: #1a1a1a;
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --light-orange: #ffb573;
+            --font-family-sans-serif: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family-sans-serif);
+            background-color: #f8f9fa;
+        }
+        
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-orange);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Navbar styling */
+        .navbar {
+            background-color: var(--primary-black);
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .nav-link:hover {
+            color: var(--primary-orange) !important;
+        }
+        .nav-link.active {
+            color: var(--primary-orange) !important;
+            font-weight: 600;
+        }
+        
+        /* KPI Card Styling */
+        .kpi-card {
+            border-left: 5px solid var(--primary-orange);
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        /* Table styling */
+        .table-loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            z-index: 10;
+        }
+        
+        .text-primary-orange {
+            color: var(--primary-orange) !important;
+        }
+        
+        /* Invoice details styling */
+        .invoice-item-row {
+            transition: background-color 0.2s;
+        }
+        .invoice-item-row:hover {
+            background-color: rgba(255, 107, 53, 0.05);
+        }
+        
+        /* Filter controls */
+        .filter-control {
+            transition: all 0.3s ease;
+        }
+        .filter-control:focus {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 0.25rem rgba(255, 107, 53, 0.25);
+        }
+        
+        /* Animation for table rows */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-row {
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        /* Download button pulse */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 53, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
+        }
+        
+        .btn-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .kpi-card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay removed for instant display -->
+
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand fw-bold" href="index.html">Feza Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="New_Arrivals.html">New Arrivals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Account_centre.html">Account</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="Cart_History.html">Cart History</a></li>
+                </ul>
+                <div class="d-flex">
+                    <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#cartModal">
+                        <i class="bi-cart-fill me-1"></i>
+                        Cart
+                        <span class="badge bg-light text-dark ms-1 rounded-pill" id="cartCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Header-->
+    <header class="py-5 bg-dark">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Cart History</h1>
+                <p class="lead fw-normal text-white-50 mb-0">View your purchases as they happen</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Shopping Analytics Section -->
+    <section class="py-5">
+        <div class="container px-4 px-lg-5">
+            <h2 class="mb-4 fw-bold">Your Cart History</h2>
+            <div class="card p-4 shadow-sm position-relative">
+                <!-- Table loading overlay removed for instant display -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date & Time</th>
+                                <th>Total Amount</th>
+                                <th>Items Purchased</th>
+                                <th>Payment Method</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartHistoryBody">
+                            <!-- Real-time cart history will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noDataMessage" class="text-center py-5 d-none">
+                    <p class="lead text-muted"><i class="bi bi-info-circle-fill me-2"></i> No cart history found. Complete a purchase to see your orders!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Invoice Details Modal -->
+    <div class="modal fade" id="invoiceDetailsModal" tabindex="-1" aria-labelledby="invoiceDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="invoiceDetailsModalLabel">Invoice Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Invoice ID: <span id="modalInvoiceId" class="fw-normal"></span></h6>
+                            <p class="mb-1">Date: <span id="modalInvoiceDate" class="fw-normal"></span></p>
+                            <p class="mb-1">Status: <span id="modalInvoiceStatus" class="badge bg-success">Completed</span></p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <img src="assets/feza-logo.png" alt="Feza Shop Logo" height="40" onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'0.9em\' font-size=\'90\'>🛍️</text></svg>'">
+                            <p class="mt-2 mb-0">Feza Shop Inc.</p>
+                            <p class="mb-0">support@fezashop.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive mb-4">
+                        <h6 class="fw-bold mb-3">Items Purchased</h6>
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th class="text-end">Price</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modalItemsList">
+                                <!-- Items will be loaded here -->
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Subtotal:</td>
+                                    <td class="text-end" id="modalSubtotal"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Shipping:</td>
+                                    <td class="text-end" id="modalShipping"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Tax:</td>
+                                    <td class="text-end" id="modalTax"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Total:</td>
+                                    <td class="text-end fw-bold text-primary-orange" id="modalTotal"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3">Shipping Details</h6>
+                            <p class="mb-1" id="modalShippingName"></p>
+                            <p class="mb-1" id="modalShippingAddress"></p>
+                            <p class="mb-1" id="modalShippingCity"></p>
+                            <p class="mb-1" id="modalShippingPhone"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3">Payment Summary</h6>
+                            <p class="mb-1">Method: <span id="modalPaymentMethod"></span></p>
+                            <p class="mb-1">Transaction ID: <span id="modalTransactionId"></span></p>
+                            <p class="mb-1">Date Processed: <span id="modalPaymentDate"></span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-pulse" id="downloadInvoiceBtn">
+                        <i class="bi bi-download me-1"></i> Download Invoice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="notification" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Feza Shop</strong>
+                <small>Just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="notificationText">
+                Invoice downloaded successfully!
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer-->
+    <footer class="py-5 bg-dark mt-5">
+        <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Feza Shop 2025</p></div>
+    </footer>
+    
+    <!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Pool client integration removed -->
+    
+<!-- Shopping Analytics JS -->
+    <script>
+        // Cart history from localStorage
+        const cartHistoryBody = document.getElementById('cartHistoryBody');
+        const noDataMessage = document.getElementById('noDataMessage');
+
+        function renderCartHistory() {
+            let cartHistory = [];
+            try {
+                cartHistory = JSON.parse(localStorage.getItem('feza-cart-history')) || [];
+            } catch (e) { cartHistory = []; }
+            cartHistoryBody.innerHTML = '';
+            if (cartHistory.length === 0) {
+                noDataMessage.classList.remove('d-none');
+                return;
+            }
+            noDataMessage.classList.add('d-none');
+            cartHistory.forEach(order => {
+                const itemsList = (order.items || []).map(item => `${item.quantity}x ${item.name}`).join(', ');
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.invoice_id || order.transaction_id || 'N/A'}</td>
+                    <td>${new Date(order.date).toLocaleString()}</td>
+                    <td><strong class="text-primary-orange">TZS ${order.total}</strong></td>
+                    <td>${itemsList}</td>
+                    <td>Card</td>
+                `;
+                cartHistoryBody.appendChild(row);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCartHistory();
+        });
+    </script>
+</body>
+</html>

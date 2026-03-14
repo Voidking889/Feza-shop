@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Feza Shop - Your Premium Shopping Destination" />
+    <meta name="author" content="Feza Shop" />
+    <title>Feza Shop - Premium Shopping Experience</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🛍️</text></svg>" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-black: #1a1a1a;
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --light-orange: #ffb380;
+            --pure-white: #ffffff;
+            --light-gray: #f8f9fa;
+            --medium-gray: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-gray);
+            overflow-x: hidden;
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-black);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--light-orange);
+            border-top: 4px solid var(--primary-orange);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--primary-black) !important;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            color: var(--primary-orange) !important;
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--pure-white) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: var(--primary-orange) !important;
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-orange);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .navbar-nav .nav-link:hover::after,
+        .navbar-nav .nav-link.active::after {
+            width: 100%;
+        }
+
+        .cart-btn {
+            background: var(--primary-orange) !important;
+            border: none !important;
+            color: var(--pure-white) !important;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .cart-btn:hover {
+            background: var(--secondary-orange) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .cart-badge {
+            background: var(--primary-black) !important;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Header */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-black) 0%, #2d2d2d 100%);
+            color: var(--pure-white);
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--primary-orange) 0%, transparent 70%);
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--pure-white), var(--primary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+
+        /* Product Cards */
+        .product-section {
+            padding: 5rem 0;
+            background: var(--light-gray);
+        }
+
+        .product-card {
+            background: var(--pure-white);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            height: 100%;
+        }
+
+        .product-card.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .product-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .sale-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary-orange);
+            color: var(--pure-white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            animation: bounceIn 1s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .product-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-rating {
+            margin-bottom: 1rem;
+        }
+
+        .star-rating {
+            color: var(--primary-orange);
+            font-size: 0.9rem;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-black);
+            margin-bottom: 1rem;
+        }
+
+        .price-original {
+            text-decoration: line-through;
+            color: var(--medium-gray);
+            margin-right: 0.5rem;
+        }
+
+        .price-sale {
+            color: var(--primary-orange);
+        }
+
+        .add-to-cart-btn {
+            background: var(--primary-black);
+            color: var(--pure-white);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-to-cart-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--primary-orange);
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .add-to-cart-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .add-to-cart-btn:hover {
+            color: var(--pure-white);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .add-to-cart-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-black);
+            color: var(--pure-white);
+            padding: 3rem 0 1rem;
+        }
+
+        /* Cart Modal */
+        .cart-modal .modal-content {
+            border-radius: 20px;
+            border: none;
+        }
+
+        .cart-modal .modal-header {
+            background: var(--primary-orange);
+            color: var(--pure-white);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .cart-item {
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .product-card {
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: -300px;
+            background: var(--primary-orange);
+            color: var(--pure-white);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            right: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="#!">🛍️ Feza Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon" style="background-image: url('data:image/svg+xml;charset=utf8,<svg viewBox=\'0 0 30 30\' xmlns=\'http://www.w3.org/2000/svg\'><path stroke=\'rgba%28255, 255, 255, 1%29\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-miterlimit=\'10\' d=\'M4 7h22M4 15h22M4 23h22\'/></svg>');"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="New_Arrivals.html">New Arrivals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Shopping_Analytics.html">My Shopping History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Account_centre.html">Account</a></li>
+                </ul>
+                <button class="btn cart-btn" type="button" data-bs-toggle="modal" data-bs-target="#cartModal">
+                    <i class="bi-cart-fill me-2"></i>
+                    Cart
+                    <span class="badge cart-badge ms-2 rounded-pill" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center">
+                <h1 class="hero-title">Shop in Style</h1>
+                <p class="hero-subtitle mb-0">Discover Feza products with unmatched quality</p>
+            </div>
+        </div>
+    </header>
+
+    <section class="product-section">
+        <div class="container px-4 px-lg-5 mt-5">
+            <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-xl-3 justify-content-center" id="productsContainer">
+                </div>
+        </div>
+    </section>
+
+    <div class="modal fade cart-modal" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">
+                        <i class="bi-cart-fill me-2"></i>Shopping Cart
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cartItems">
+                        <p class="text-center text-muted">Your cart is empty</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Total: $<span id="cartTotal">0.00</span></h5>
+                        <div>
+                            <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Continue Shopping</button>
+                            <button type="button" href="feza-pay.html" class="btn" style="background: var(--primary-orange); color: white;"  onclick="payRoll()">Checkout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="m-0 text-center">© 2025 Feza Shop | FEZA SCHOOLS. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div class="notification" id="notification">
+        <i class="bi-check-circle me-2"></i>
+        <span id="notificationText">Product added to cart!</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Products data
+        const products = [
+            {
+                id: 1,
+                name: "Premium Headphones",
+                price: 89.99,
+                originalPrice: null,
+                rating: 5,
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=450&h=300&fit=crop",
+                onSale: false
+            },
+            {
+                id: 2,
+                name: "Wireless Speaker",
+                price: 49.99,
+                originalPrice: 79.99,
+                rating: 5,
+                image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=450&h=300&fit=c",
+                onSale: true
+            },
+            {
+                id: 3,
+                name: "Smart Watch",
+                price: 199.99,
+                originalPrice: 299.99,
+                rating: 4,
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=450&h=300&fit=crop",
+                onSale: true
+            },
+            {
+                id: 4,
+                name: "Laptop Stand",
+                price: 39.99,
+                originalPrice: null,
+                rating: 5,
+                image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=450&h=300&fit=crop",
+                onSale: false
+            },
+            {
+                id: 5,
+                name: "Gaming Mouse",
+                price: 24.99,
+                originalPrice: 49.99,
+                rating: 4,
+                image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=450&h=300&fit=crop",
+                onSale: true
+            },
+            {
+                id: 6,
+                name: "Mechanical Keyboard",
+                price: 129.99,
+                originalPrice: null,
+                rating: 5,
+                image: "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=450&h=300&fit=crop",
+                onSale: false
+            },
+            {
+                id: 7,
+                name: "Phone Case",
+                price: 19.99,
+                originalPrice: 29.99,
+                rating: 4,
+                image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=450&h=300&fit=crop",
+                onSale: true
+            },
+            {
+                id: 8,
+                name: "Tablet Holder",
+                price: 34.99,
+                originalPrice: null,
+                rating: 5,
+                image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=450&h=300&fit=crop",
+                onSale: false
+            }
+        ];
+
+        // Cart functionality
+        let cart = [];
+
+        // DOM elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const productsContainer = document.getElementById('productsContainer');
+        const cartCount = document.getElementById('cartCount');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                    renderProducts();
+                    animateCards();
+                }, 500);
+            }, 1500);
+        });
+
+        //go to feza-pay
+        function payRoll() {
+            // Calculate cart totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = 5.99; // Fixed shipping for simplicity
+            const taxRate = 0.07; // 7% tax rate
+            const tax = subtotal * taxRate;
+            const total = subtotal + shipping + tax;
+
+            const orderData = {
+                items: cart.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                })),
+                subtotal: subtotal,
+                shipping: shipping,
+                tax: tax,
+                total: total
+            };
+
+            if (cart.length === 0) {
+                 alert('Your cart is empty! Please add items before checking out.');
+                 return;
+            }
+
+            // Store order data in localStorage for the payment page to pick up
+            localStorage.setItem('feza-checkout-data', JSON.stringify(orderData));
+            
+            // Close modal (if open)
+            const modalEl = document.getElementById('cartModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) {
+                modal.hide();
+            }
+
+            // Redirect to feza-pay.html
+            window.location.href = 'feza-pay.html';
+        }
+
+        // Render products
+        function renderProducts() {
+            productsContainer.innerHTML = products.map(product => `
+                <div class="col mb-5">
+                    <div class="card product-card h-100">
+                        <div class="product-image">
+                            ${product.onSale ? '<div class="sale-badge">Sale</div>' : ''}
+                            <img src="${product.image}" alt="${product.name}" />
+                        </div>
+                        <div class="card-body product-info">
+                            <h5 class="product-name">${product.name}</h5>
+                            <div class="product-rating mb-2">
+                                <div class="star-rating">
+                                    ${'★'.repeat(product.rating)}${'☆'.repeat(5 - product.rating)}
+                                </div>
+                            </div>
+                            <div class="product-price">
+                                ${product.originalPrice ? `<span class="price-original">$${product.originalPrice}</span>` : ''}
+                                <span class="price-sale">$${product.price}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-4">
+                            <div class="text-center">
+                                <button class="btn add-to-cart-btn" onclick="addToCart(${product.id})">
+                                    <span><i class="bi-cart-plus me-2"></i>Add to Cart</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Animate cards
+        function animateCards() {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-in');
+                }, index * 150);
+            });
+        }
+
+        // Add to cart function
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({...product, quantity: 1});
+            }
+
+            updateCartUI();
+            showNotification(`${product.name} added to cart!`);
+        }
+
+        // Update cart UI
+        function updateCartUI() {
+            // Update cart count
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+
+            // Update cart items
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-center text-muted">Your cart is empty</p>';
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="row align-items-center">
+                            <div class="col-3">
+                                <img src="${item.image}" alt="${item.name}" class="img-fluid rounded" style="height: 60px; object-fit: cover;">
+                            </div>
+                            <div class="col-6">
+                                <h6 class="mb-1">${item.name}</h6>
+                                <small class="text-muted">$${item.price.toFixed(2)} each</small>
+                            </div>
+                            <div class="col-3 text-end">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <button class="btn btn-sm btn-outline-secondary me-1" onclick="changeQuantity(${item.id}, -1)">-</button>
+                                    <span class="mx-2">${item.quantity}</span>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1" onclick="changeQuantity(${item.id}, 1)">+</button>
+                                </div>
+                                <button class="btn btn-sm text-danger mt-1" onclick="removeFromCart(${item.id})">
+                                    <i class="bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Update total
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotal.textContent = total.toFixed(2);
+        }
+
+        // Change quantity
+        function changeQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartUI();
+                }
+            }
+        }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+            showNotification('Item removed from cart');
+        }
+
+        // Show notification
+        function showNotification(message) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Smooth scrolling for navbar links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Navbar background change on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(26, 26, 26, 0.95)';
+                navbar.style.backdropFilter = 'blur(10px)';
+            } else {
+                navbar.style.background = 'var(--primary-black)';
+                navbar.style.backdropFilter = 'none';
+            }
+        });
+
+        // Ensure updateCartUI is called on page load to restore any saved cart data
+        updateCartUI(); 
+    </script>
+
+    <!-- Pool Server Integration -->
+    <script src="js/pool-client.js"></script>
+    <script>
+        // Initialize Feza Pool Client for cross-page data synchronization
+        let fezaPoolClient;
+        
+        function initializePoolClient() {
+            try {
+                fezaPoolClient = new FezaPoolClient();
+                
+                // Listen for real-time updates
+                fezaPoolClient.on('analytics', (data) => {
+                    console.log('Analytics update received:', data);
+                    // Update any analytics displays on the homepage if needed
+                });
+                
+                fezaPoolClient.on('newTransaction', (transaction) => {
+                    console.log('New transaction received:', transaction);
+                    // Show notification for new transactions
+                    showNotification(`New transaction: $${transaction.amount}`);
+                });
+                
+                fezaPoolClient.on('connected', () => {
+                    console.log('Connected to Feza Pool Server');
+                });
+                
+                fezaPoolClient.on('disconnected', () => {
+                    console.log('Disconnected from Feza Pool Server');
+                });
+                
+                // Connect to the server
+                fezaPoolClient.connect();
+                
+            } catch (error) {
+                console.log('Pool server not available, running in offline mode');
+            }
+        }
+        
+        // Initialize pool client when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initializePoolClient, 1000); // Delay to ensure server is ready
+        });
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (fezaPoolClient) {
+                fezaPoolClient.disconnect();
+            }
+        });
+    </script>
+</body>
+</html>

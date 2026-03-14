@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Feza Delivery - Live Tracking</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Google Fonts: Poppins for Brand Consistency -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Feza Shop Brand Palette */
+            --brand-primary: #ff6b35; 
+            --brand-gradient: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            --brand-secondary: #1a1a1a; /* Feza Primary Black */
+            --bg-color: #f8f9fa;
+            --surface-color: rgba(255, 255, 255, 0.9);
+            --text-primary: #1a1a1a;
+            --text-secondary: #6c757d;
+            --success: #28a745;
+            --shadow-premium: 0 25px 60px -15px rgba(0, 0, 0, 0.2);
+            --glass-bg: rgba(26, 26, 26, 0.85); /* Dark Feza Glass */
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --plate-yellow: #FFD700;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Access Denied Overlay */
+        #access-denied {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #fff;
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2em;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Map Container */
+        #map {
+            flex-grow: 1;
+            width: 100%;
+            z-index: 1;
+            filter: grayscale(5%) contrast(102%);
+        }
+
+        /* Top Bar - Feza Premium Glassmorphism */
+        .top-bar {
+            position: absolute;
+            top: 25px;
+            left: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            padding: 15px 25px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-premium);
+            border: 1px solid var(--glass-border);
+            animation: slideDownEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDownEntrance {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feza-logo-icon {
+            font-size: 1.5rem;
+            color: var(--brand-primary);
+            background: rgba(255, 107, 53, 0.1);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .eta-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .eta-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 700;
+            margin-bottom: 0px;
+        }
+
+        .eta-time {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .eta-time small {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        .distance-badge {
+            background: var(--brand-primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .distance-badge:hover {
+            transform: scale(1.05);
+            background: var(--brand-secondary);
+        }
+
+        /* Bottom Sheet - Feza Style */
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border-top-left-radius: 35px;
+            border-top-right-radius: 35px;
+            box-shadow: 0 -15px 50px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 20px 25px 40px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: slideUpEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpEntrance {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .drag-handle {
+            width: 40px;
+            height: 5px;
+            background: #E2E8F0;
+            border-radius: 10px;
+            margin: 0 auto 5px auto;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .drag-handle:hover {
+            background: #CBD5E1;
+        }
+
+        /* Progress Bar */
+        .progress-track {
+            width: 100%;
+            height: 12px;
+            background: #F1F5F9;
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            position: absolute;
+            top: 0; left: 0; height: 100%;
+            background: var(--brand-gradient);
+            width: 0%;
+            border-radius: 999px;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Driver Info */
+        .driver-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #F8FAFC;
+            padding: 20px;
+            border-radius: 28px;
+            border: 1px solid #F1F5F9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .driver-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+        }
+
+        .driver-avatar-wrapper {
+            position: relative;
+        }
+
+        .driver-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 22px;
+            object-fit: cover;
+            box-shadow: 0 12px 24px -8px rgba(0,0,0,0.15);
+            border: 3px solid #fff;
+        }
+
+        .status-dot {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 18px;
+            height: 18px;
+            background: var(--success);
+            border: 4px solid #fff;
+            border-radius: 50%;
+            animation: breath 2s infinite ease-in-out;
+        }
+
+        @keyframes breath {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .driver-details {
+            flex-grow: 1;
+        }
+
+        .driver-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--brand-secondary);
+            margin-bottom: 4px;
+            letter-spacing: -0.6px;
+        }
+
+        .vehicle-tag {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .license-plate {
+            background: var(--plate-yellow);
+            color: #1a1a1a;
+            font-family: 'Space Mono', monospace;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 8px;
+            border: 1.5px solid #000;
+            font-size: 0.75rem;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        }
+
+        /* Action Buttons */
+        .action-btns {
+            display: flex;
+            gap: 14px;
+        }
+
+        .icon-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-call {
+            background: #fff;
+            color: var(--brand-secondary);
+            border: 2px solid #F1F5F9;
+        }
+
+        .btn-chat {
+            background: var(--brand-gradient);
+            color: white;
+            box-shadow: 0 12px 25px -8px rgba(255, 122, 0, 0.4);
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.1) translateY(-3px);
+        }
+
+        .icon-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Floating Chat UI */
+        #chat-window {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80vh;
+            background: white;
+            z-index: 2000;
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 -20px 80px rgba(0,0,0,0.2);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(100%);
+        }
+
+        #chat-window.active {
+            display: flex;
+            transform: translateY(0);
+        }
+
+        .chat-header {
+            padding: 28px;
+            border-bottom: 1px solid #F1F5F9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-body {
+            flex-grow: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: #F8FAFC;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            animation: messagePop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes messagePop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .msg-driver {
+            align-self: flex-start;
+            background: white;
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-user {
+            align-self: flex-end;
+            background: var(--brand-gradient);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-footer {
+            padding: 24px;
+            display: flex;
+            gap: 12px;
+            background: white;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 16px 24px;
+            border-radius: 18px;
+            border: 1.5px solid #F1F5F9;
+            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: #F8FAFC;
+        }
+
+        .chat-input:focus {
+            border-color: var(--brand-primary);
+            background: #fff;
+        }
+
+        /* Rating Stars */
+        .rating-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rating-card {
+            background: white;
+            padding: 45px 35px;
+            border-radius: 40px;
+            text-align: center;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: zoomEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes zoomEntrance {
+            from { transform: scale(0.9) translateY(40px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            font-size: 2.8rem;
+        }
+
+        .star {
+            color: #EDF2F7;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .star.active {
+            color: #FFB800;
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 10px rgba(255, 184, 0, 0.4));
+        }
+
+        .feedback-input {
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            border: 1.5px solid #EDF2F7;
+            margin-bottom: 25px;
+            outline: none;
+            font-size: 1rem;
+            min-height: 100px;
+            resize: none;
+            background: #F8FAFC;
+        }
+
+        .btn-submit-rating {
+            width: 100%;
+            padding: 20px;
+            background: var(--brand-secondary);
+            color: white;
+            border: none;
+            border-radius: 22px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit-rating:hover {
+            background: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Marker Styles */
+        .pulse-marker {
+            background: var(--brand-primary);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            position: relative;
+            box-shadow: 0 0 0 5px rgba(255, 122, 0, 0.2);
+            border: 4px solid #fff;
+        }
+
+        .pulse-marker::after {
+            content: '';
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border-radius: 50%;
+            border: 2px solid var(--brand-primary);
+            animation: pulse-ring 2s infinite ease-out;
+            opacity: 0;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.5); opacity: 0.8; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .car-marker {
+            font-size: 38px;
+            color: var(--brand-secondary);
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));
+            transition: transform 0.2s ease-out;
+        }
+
+        .brand-icon-breathing {
+            animation: brandBreath 3s infinite ease-in-out;
+        }
+
+        @keyframes brandBreath {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+    </style>
+    </style>
+</head>
+<body>
+
+    <!-- Access Denied -->
+    <div id="access-denied">
+        <div style="background: #FEF2F2; color: #DC2626; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin-bottom: 24px;">
+            <i class="fa-solid fa-lock"></i>
+        </div>
+        <h2 style="font-weight: 800; color: #1E293B; margin-bottom: 12px;">Oops! Payment Needed</h2>
+        <p style="color: #64748B;">Please complete your payment at Feza Shop to access live tracking for your delivery.</p>
+        <a href="index.html" style="margin-top: 30px; display: inline-block; padding: 16px 32px; background: #0F172A; color: white; text-decoration: none; border-radius: 16px; font-weight: 700;">Back to Shop</a>
+    </div>
+
+    <!-- Main Live View -->
+    <div id="app-container" style="display: none; flex-direction: column; height: 100vh;">
+        <div class="top-bar">
+            <div class="brand-section">
+                <i class="fa-solid fa-shopping-bag feza-logo-icon brand-icon-breathing"></i>
+                <div class="eta-container">
+                    <span class="eta-label">Tracking</span>
+                    <span style="font-weight: 800; color: #fff; font-size: 1.1rem;">Feza Shop</span>
+                </div>
+            </div>
+            
+            <div class="eta-container" style="align-items: center;">
+                <span class="eta-label">ETA</span>
+                <span class="eta-time" id="eta-display">Calculating...</span>
+            </div>
+
+            <div class="distance-badge">
+                <i class="fa-solid fa-bolt"></i>
+                <span id="distance-display">-- km</span>
+            </div>
+        </div>
+
+        <div id="map"></div>
+
+        <!-- Bottom Sheet -->
+        <div class="bottom-sheet" id="driver-sheet">
+            <div class="drag-handle" onclick="toggleSheet()"></div>
+            
+            <div class="progress-track" style="margin-bottom: 5px;">
+                <div class="progress-fill" id="progress-bar"></div>
+            </div>
+
+            <div class="driver-card">
+                <div class="driver-avatar-wrapper">
+                    <img id="driver-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" class="driver-avatar">
+                    <div class="status-dot"></div>
+                </div>
+                
+                <div class="driver-details">
+                    <div class="driver-name" id="driver-name">Juma Omari</div>
+                    <div class="vehicle-tag">
+                        <span id="vehicle-model">Toyota IST Silver</span>
+                        <span id="vehicle-plate" class="license-plate">T 421 CXZ</span>
+                    </div>
+                </div>
+
+                <div class="action-btns">
+                    <a href="tel:+255712345678" class="icon-btn btn-call" id="call-link">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                    <button class="icon-btn btn-chat" onclick="openChat()">
+                        <i class="fa-solid fa-message"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Overlay -->
+    <div id="chat-window">
+        <div class="chat-header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img id="chat-avatar" src="" style="width: 48px; height: 48px; border-radius: 16px; border: 2px solid #F1F5F9;">
+                <div>
+                    <div style="font-weight: 800; font-size: 1.15rem; color: var(--brand-secondary);" id="chat-name"></div>
+                    <div style="font-size: 0.8rem; color: var(--success); font-weight: 700; display: flex; align-items: center; gap: 5px;">
+                        <span style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></span>
+                        Online
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeChat()" style="background: #F8FAFC; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; color: #64748B; cursor: pointer; transition: all 0.2s;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="chat-body" id="chat-content">
+            <div class="message msg-driver">Hello! I've picked up your order and I'm on my way.</div>
+            <div class="message msg-driver">Traffic is a bit heavy near Mbezi, but I'll be there soon!</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" class="chat-input" id="chat-msg-input" placeholder="Message Juma...">
+            <button class="icon-btn btn-chat" style="width: 52px; height: 52px;" onclick="sendMessage()">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div class="rating-overlay" id="rating-modal">
+        <div class="rating-card">
+            <div style="font-size: 3rem; color: var(--success); margin-bottom: 20px;"><i class="fa-solid fa-circle-check"></i></div>
+            <h2 style="font-weight: 800; margin-bottom: 8px; color: var(--brand-secondary);">Delivery Arrived!</h2>
+            <p style="color: #64748B; margin-bottom: 30px;">How was your experience with **Juma Omari** today?</p>
+            
+            <div class="star-rating">
+                <i class="fa-solid fa-star star" data-value="1"></i>
+                <i class="fa-solid fa-star star" data-value="2"></i>
+                <i class="fa-solid fa-star star" data-value="3"></i>
+                <i class="fa-solid fa-star star" data-value="4"></i>
+                <i class="fa-solid fa-star star" data-value="5"></i>
+            </div>
+
+            <textarea class="feedback-input" placeholder="Anything we can improve? (Optional)"></textarea>
+            
+            <button onclick="submitRating()" class="btn-submit-rating">Submit Feedback</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        const MOCK_DRIVER = {
+            name: "Juma Omari",
+            avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+            vehicle: "Toyota IST Silver",
+            plate: "T 421 CXZ",
+            phone: "+255712345678"
+        };
+
+        // Real Dar es Salaam Coordinates
+        const FEZA_SHOP = [-6.7266, 39.2223]; 
+        const DEFAULT_DEST = [-6.7760, 39.2600]; 
+
+        let map, carMarker, destMarker, routeLine;
+
+        function initApp() {
+            // For developers/testers, we auto-enable delivery if not set
+            if (!localStorage.getItem('feza-active-delivery')) {
+                localStorage.setItem('feza-active-delivery', 'true');
+            }
+
+            document.getElementById('app-container').style.display = 'flex';
+            document.getElementById('chat-avatar').src = MOCK_DRIVER.avatar;
+            document.getElementById('chat-name').textContent = MOCK_DRIVER.name;
+
+            initMap();
+        }
+
+        function initMap() {
+            let destCoords = DEFAULT_DEST;
+            const savedDest = localStorage.getItem('feza-custom-dest');
+            if (savedDest) {
+                try {
+                    const parsed = JSON.parse(savedDest);
+                    destCoords = [parsed.lat, parsed.lng];
+                } catch(e) {}
+            }
+
+            map = L.map('map', { zoomControl: false, attributionControl: false }).setView(FEZA_SHOP, 14);
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+
+            routeLine = L.polyline([FEZA_SHOP, destCoords], { color: '#FF7A00', weight: 6, opacity: 0.4, dashArray: '12, 12' }).addTo(map);
+
+            const destIcon = L.divIcon({ className: 'p', html: '<div class="pulse-marker"></div>', iconSize: [24, 24], iconAnchor: [12, 12] });
+            destMarker = L.marker(destCoords, { icon: destIcon }).addTo(map);
+
+            const carIcon = L.divIcon({ className: 'c', html: '<div id="car-inner" class="car-marker"><i class="fa-solid fa-car-side"></i></div>', iconSize: [40, 40], iconAnchor: [20, 20] });
+            carMarker = L.marker(FEZA_SHOP, { icon: carIcon }).addTo(map);
+
+            map.fitBounds(routeLine.getBounds(), { padding: [60, 60], paddingBottomRight: [0, 300] });
+
+            startSimulation(FEZA_SHOP, destCoords);
+        }
+
+        async function startSimulation(start, end) {
+            const steps = 300;
+            const totalDistKm = (Math.sqrt(Math.pow(end[0] - start[0], 2) + Math.pow(end[1] - start[1], 2)) * 111).toFixed(1);
+            
+            for (let i = 0; i <= steps; i++) {
+                const progress = i / steps;
+                const lat = start[0] + (end[0] - start[0]) * progress;
+                const lng = start[1] + (end[1] - start[1]) * progress;
+                
+                carMarker.setLatLng([lat, lng]);
+                
+                // Only pan if we're moving significantly or to keep car in view
+                if (i % 20 === 0) {
+                    map.panTo([lat, lng], { animate: true, duration: 2 });
+                }
+
+                // Update UI with realistic jitter
+                const remainingDist = Math.max(0, (totalDistKm * (1 - progress))).toFixed(1);
+                document.getElementById('distance-display').textContent = `${remainingDist} km`;
+                document.getElementById('progress-bar').style.width = `${progress * 100}%`;
+                
+                const etaMins = Math.ceil(remainingDist * 5 + (Math.random() * 2)); // Add jitter
+                document.getElementById('eta-display').innerHTML = remainingDist > 0 ? `${etaMins} <small>mins</small>` : 'Arrived!';
+
+                if (i % 30 === 0) {
+                    const angle = Math.atan2(end[0] - start[0], end[1] - start[1]) * (180 / Math.PI);
+                    document.getElementById('car-inner').style.transform = `rotate(${angle - 60}deg)`; // Refined angle
+                }
+
+                await new Promise(r => setTimeout(r, 150));
+            }
+
+            setTimeout(() => {
+                document.getElementById('rating-modal').style.display = 'flex';
+            }, 1000);
+        }
+
+        // UI Interactions
+        function openChat() { 
+            const win = document.getElementById('chat-window');
+            win.style.display = 'flex';
+            setTimeout(() => win.classList.add('active'), 10);
+        }
+        function closeChat() { 
+            const win = document.getElementById('chat-window');
+            win.classList.remove('active');
+            setTimeout(() => win.style.display = 'none', 400);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-msg-input');
+            if (!input.value.trim()) return;
+
+            const content = document.getElementById('chat-content');
+            const msg = document.createElement('div');
+            msg.className = 'message msg-user';
+            msg.textContent = input.value;
+            content.appendChild(msg);
+            
+            input.value = '';
+            content.scrollTop = content.scrollHeight;
+
+            // Simple Auto-reply
+            setTimeout(() => {
+                const reply = document.createElement('div');
+                reply.className = 'message msg-driver';
+                reply.textContent = "Copy that! I'm on it.";
+                content.appendChild(reply);
+                content.scrollTop = content.scrollHeight;
+            }, 1500);
+        }
+
+        // Star Rating Logic
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', () => {
+                const val = parseInt(star.getAttribute('data-value'));
+                document.querySelectorAll('.star').forEach((s, idx) => {
+                    s.classList.toggle('active', idx < val);
+                });
+            });
+        });
+
+        function submitRating() {
+            alert("Thanks for your feedback!");
+            localStorage.removeItem('feza-active-delivery');
+            window.location.href = 'index.html';
+        }
+
+        function toggleSheet() {
+            const sheet = document.getElementById('driver-sheet');
+            const isFolded = sheet.style.transform === 'translateY(calc(100% - 100px))';
+            sheet.style.transform = isFolded ? 'translateY(0)' : 'translateY(calc(100% - 100px))';
+        }
+
+        initApp();
+    </script>
+</body>
+</html>

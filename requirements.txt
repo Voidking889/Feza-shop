@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+stripe
+fastapi-mail
+sqlalchemy
+aiosqlite
+psycopg2-binary
+asyncpg
+python-dotenv
+requests
+httpx

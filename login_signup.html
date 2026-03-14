@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Feza Shop - Login & Signup" />
+    <title>Feza Shop - Welcome</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🔐</text></svg>" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-orange: #ff6b35;
+            --secondary-orange: #ff8c42;
+            --primary-black: #1a1a1a;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(-45deg, #1a1a1a, #2d2d2d, #ff6b35, #ff8c42);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            color: var(--text-white);
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .auth-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 500;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-white);
+            padding: 12px 15px 12px 45px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.2);
+            color: var(--text-white);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 42px;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.3s ease;
+        }
+
+        .form-control:focus + .input-icon {
+            color: var(--primary-orange);
+        }
+
+        .btn-auth {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(255, 107, 53, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .auth-toggle {
+            text-align: center;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .auth-toggle a {
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .auth-toggle a:hover {
+            color: var(--secondary-orange);
+            text-decoration: underline;
+        }
+
+        /* Form Switching Animation */
+        #signup-form {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Brand Logo Style */
+        .brand-logo {
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .glass-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="glass-card">
+        <!-- Logo Area -->
+        <div class="text-center">
+            <div class="brand-logo">
+                <i class="bi bi-shop"></i>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="fade-in">
+            <div class="auth-header">
+                <h1>Welcome Back</h1>
+                <p>Login to continue your shopping journey</p>
+            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" placeholder="name@example.com" required>
+                    <i class="bi bi-envelope input-icon"></i>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="••••••••" required>
+                    <i class="bi bi-lock input-icon"></i>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                        <label class="form-check-label text-white-50" for="rememberMe" style="font-size: 0.8rem;">
+                            Remember me
+                        </label>
+                    </div>
+                    <a href="#" class="text-white-50" style="font-size: 0.8rem; text-decoration: none;">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn btn-auth">Login</button>
+            </form>
+            <div class="auth-toggle">
+                Don't have an account? <a href="javascript:void(0)" onclick="toggleAuth()">Sign Up</a>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-form">
+            <div class="auth-header">
+                <h1>Create Account</h1>
+                <p>Join Feza Shop for a premium experience</p>
+            </div>
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" placeholder="John Doe" required>
+                    <i class="bi bi-person input-icon"></i>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" placeholder="name@example.com" required>
+                    <i class="bi bi-envelope input-icon"></i>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="••••••••" required>
+                    <i class="bi bi-lock input-icon"></i>
+                </div>
+                <button type="submit" class="btn btn-auth">Create Account</button>
+            </form>
+            <div class="auth-toggle">
+                Already have an account? <a href="javascript:void(0)" onclick="toggleAuth()">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleAuth() {
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        
+        if (loginForm.style.display === 'none') {
+            signupForm.classList.remove('fade-in');
+            signupForm.style.display = 'none';
+            loginForm.style.display = 'block';
+            loginForm.classList.add('fade-in');
+        } else {
+            loginForm.classList.remove('fade-in');
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+            signupForm.classList.add('fade-in');
+        }
+    }
+
+    function handleLogin(e) {
+        e.preventDefault();
+        // Mock login
+        const btn = e.target.querySelector('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Logging in...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            const email = e.target.querySelector('input[type="email"]').value;
+            const name = email.split('@')[0]; // Mocking name from email for login
+            localStorage.setItem('feza_user_name', name.charAt(0).toUpperCase() + name.slice(1));
+            alert('Login successful! Redirecting...');
+            window.location.href = 'index.html';
+        }, 1500);
+    }
+
+    function handleSignup(e) {
+        e.preventDefault();
+        // Mock signup
+        const btn = e.target.querySelector('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Joining...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            const name = e.target.querySelector('input[type="text"]').value;
+            localStorage.setItem('feza_user_name', name.split(' ')[0]); // Save first name
+            alert('Account created successfully! Welcome to Feza Shop.');
+            window.location.href = 'index.html';
+        }, 1500);
+    }
+</script>
+
+</body>
+</html>

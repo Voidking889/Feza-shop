@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pitch: FEZA Shop | Baraka Saidi Kiwanga</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-orange: #ff6b35;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0d1117; color: #e5e7eb; overflow-x: hidden; }
+        .glass { background: rgba(22, 27, 34, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .orange-text { color: var(--brand-orange); }
+        .orange-bg { background-color: var(--brand-orange); }
+        .slide-in { animation: slideIn 0.8s ease-out forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="selection:bg-orange-500/30">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass py-4">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i data-lucide="zap" class="orange-text w-6 h-6"></i>
+                <span class="text-xl font-bold tracking-tight">FEZA <span class="orange-text">SHOP</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium">
+                <a href="#problem" class="hover:text-orange-400 transition">The Problem</a>
+                <a href="#solution" class="hover:text-orange-400 transition">The Solution</a>
+                <a href="#technology" class="hover:text-orange-400 transition">Architecture</a>
+                <a href="#developer" class="hover:text-orange-400 transition">Developer</a>
+            </div>
+            <a href="index.html" class="orange-bg text-black px-6 py-2 rounded-full font-bold text-sm hover:scale-105 transition">Live Demo</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="min-h-screen flex items-center pt-20 px-6">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+            <div class="slide-in">
+                <div class="inline-block px-4 py-1 rounded-full glass text-xs font-bold orange-text mb-6 uppercase tracking-widest">Innovation Pitch 2026</div>
+                <h1 class="text-6xl md:text-8xl font-extrabold leading-none mb-8">
+                    Modernizing <br> School <span class="orange-text">Commerce.</span>
+                </h1>
+                <p class="text-gray-400 text-xl max-w-lg mb-10 leading-relaxed">
+                    A high-performance, student-driven e-commerce platform solving supply chain friction for Feza Schools.
+                </p>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full orange-bg flex items-center justify-center text-black">
+                        <i data-lucide="play" fill="currentColor"></i>
+                    </div>
+                    <span class="font-bold">Pitch by Baraka Saidi Kiwanga</span>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="absolute -inset-4 bg-orange-500/20 blur-3xl rounded-full"></div>
+                <img src="https://placehold.co/1200x800/161b22/ff6b35?text=Feza+Shop+Interface" class="relative rounded-2xl border border-white/10 shadow-2xl slide-in" style="animation-delay: 0.2s">
+            </div>
+        </div>
+    </section>
+
+    <!-- The Problem -->
+    <section id="problem" class="py-32 px-6 bg-[#090c10]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">The <span class="orange-text">Bottlenecks</span></h2>
+                <p class="text-gray-400">Current challenges in the school supply ecosystem.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass p-8 rounded-3xl">
+                    <i data-lucide="clock" class="orange-text w-10 h-10 mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">Manual Friction</h3>
+                    <p class="text-gray-400">Buying uniforms once meant physical visits during limited hours. Transactions were manual, and verification was slow.</p>
+                </div>
+                <div class="glass p-8 rounded-3xl">
+                    <i data-lucide="eye-off" class="orange-text w-10 h-10 mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">Opaque Tracking</h3>
+                    <p class="text-gray-400">Once an order was placed, parents had zero visibility into delivery status, leading to "Where is my order?" calls.</p>
+                </div>
+                <div class="glass p-8 rounded-3xl">
+                    <i data-lucide="shield-alert" class="orange-text w-10 h-10 mb-6"></i>
+                    <h3 class="text-2xl font-bold mb-4">Security Gaps</h3>
+                    <p class="text-gray-400">Managing school funds for clubs and supplies via loose cash or untracked digital transfers posed audit risks.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Solution -->
+    <section id="solution" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-8">The <span class="orange-text">Ecosystem</span> Solution</h2>
+                    <div class="space-y-8">
+                        <div class="flex gap-6">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-xl orange-bg/10 flex items-center justify-center">
+                                <i data-lucide="mail" class="orange-text"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Centralized Security PINs</h4>
+                                <p class="text-gray-400 text-sm">Automated email verification for wallet top-ups using a secure FastAPI background service.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-xl orange-bg/10 flex items-center justify-center">
+                                <i data-lucide="map-pin" class="orange-text"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Live Delivery Tracking</h4>
+                                <p class="text-gray-400 text-sm">Real-time GPS tracking with Leaflet.js and a premium glassmorphism mobile interface.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-xl orange-bg/10 flex items-center justify-center">
+                                <i data-lucide="credit-card" class="orange-text"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2">Multi-Gateway Payments</h4>
+                                <p class="text-gray-400 text-sm">Native support for M-Pesa, Flutterwave, and Stripe integrated into a unified checkout.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass p-4 rounded-[40px] rotate-2">
+                    <img src="https://placehold.co/800x1000/161b22/ff6b35?text=Live+Tracking+Snapshot" class="rounded-[32px] shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section id="technology" class="py-32 px-6 bg-[#090c10]">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-16">The <span class="orange-text">Architecture</span></h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="p-8 border border-white/5 rounded-3xl">
+                    <h4 class="text-3xl font-bold mb-2">Python</h4>
+                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">FastAPI Backend</p>
+                </div>
+                <div class="p-8 border border-white/5 rounded-3xl">
+                    <h4 class="text-3xl font-bold mb-2">JS/ES6</h4>
+                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Reactive Frontend</p>
+                </div>
+                <div class="p-8 border border-white/5 rounded-3xl">
+                    <h4 class="text-3xl font-bold mb-2">SQLite</h4>
+                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Persistent Storage</p>
+                </div>
+                <div class="p-8 border border-white/5 rounded-3xl">
+                    <h4 class="text-3xl font-bold mb-2">Uvicorn</h4>
+                    <p class="text-xs text-gray-400 font-medium uppercase tracking-widest">Asynchronous Server</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Developer Pitch -->
+    <section id="developer" class="py-32 px-6">
+        <div class="max-w-4xl mx-auto glass p-12 rounded-[50px] flex flex-col md:flex-row items-center gap-12">
+            <img src="https://placehold.co/300x300/374151/e5e7eb?text=Baraka" class="w-48 h-48 rounded-full border-4 border-orange-500 shadow-xl">
+            <div>
+                <h3 class="text-4xl font-extrabold mb-2">Baraka Saidi Kiwanga</h3>
+                <p class="orange-text font-bold text-lg mb-6 tracking-wide">Developer & System Architect</p>
+                <p class="text-gray-400 mb-8 leading-relaxed">
+                    "I built Feza Shop not just as a website, but as a proof of concept that student developers can solve enterprise-level problems. My focus was on creating a secure, scalable, and premium user experience that rivals modern commercial apps."
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center hover:orange-bg hover:text-black transition"><i data-lucide="github" class="w-5 h-5"></i></a>
+                    <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center hover:orange-bg hover:text-black transition"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                    <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center hover:orange-bg hover:text-black transition"><i data-lucide="globe" class="w-5 h-5"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center text-sm text-gray-500">
+        <div class="max-w-7xl mx-auto">
+            <p>© 2026 Baraka Saidi Kiwanga | Built for Feza Schools Excellence.</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

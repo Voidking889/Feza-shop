@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-mart(💳card-emulator)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .checkout-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .payment-method-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .payment-method-card:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+        }
+        .payment-method-card.active {
+            border-color: #0d6efd;
+            background: #f0f7ff;
+        }
+        .payment-method-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .payment-icon {
+            font-size: 32px;
+            color: #0d6efd;
+        }
+        .payment-details {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .payment-details.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+        .card-chip {
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .card-chip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 25px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+        .card-number {
+            font-size: 24px;
+            letter-spacing: 3px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .card-holder, .card-expiry {
+            flex: 1;
+        }
+        .card-label {
+            font-size: 10px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .card-value {
+            font-size: 16px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+        .card-brand {
+            font-size: 36px;
+            opacity: 0.9;
+        }
+        </style>
+        <body>
+            <!-- Card Payment -->
+                <div class="payment-method-card" data-method="card">
+                    <div class="payment-method-header">
+                        <input type="radio" name="payment" id="card" class="form-check-input" style="width: 20px; height: 20px;">
+                        <i class="fas fa-credit-card payment-icon"></i>
+                        <div>
+                            <h5 class="mb-0">Credit/Debit Card</h5>
+                            <small class="text-muted">Visa, Mastercard, Amex</small>
+                        </div>
+                    </div>
+                    <div class="payment-details" id="card-details">
+                        <!-- Card Preview -->
+                        <div class="card-preview">
+                            <div class="card-chip"></div>
+                            <div class="card-number" id="cardDisplay">•••• •••• •••• ••••</div>
+                            <div class="card-info">
+                                <div class="card-holder">
+                                    <div class="card-label">Cardholder</div>
+                                    <div class="card-value" id="nameDisplay">YOUR NAME</div>
+                                </div>
+                                <div class="card-expiry">
+                                    <div class="card-label">Expires</div>
+                                    <div class="card-value" id="expiryDisplay">MM/YY</div>
+                                </div>
+                                <div class="card-brand">
+                                    <i id="brandIcon" class="fas fa-credit-card"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Form -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Expiry Date</label>
+                                <input type="text" class="form-control" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">CVV</label>
+                                <input type="text" class="form-control" id="cardCVV" placeholder="123" maxlength="4">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Cardholder Name</label>
+                            <input type="text" class="form-control" id="cardName" placeholder="John Doe">
+                        </div>
+                        <div class="alert alert-success alert-custom">
+                            <i class="fas fa-lock me-2"></i>Your card details are encrypted and secure
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    
+
+        // Payment method selection
+        document.querySelectorAll('.payment-method-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                // Remove active class from all cards
+                document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Hide all payment details
+                document.querySelectorAll('.payment-details').forEach(d => d.classList.remove('show'));
+                
+                // Show selected payment details
+                const method = this.dataset.method;
+                const details = document.getElementById(`${method}-details`);
+                if (details) {
+                    details.classList.add('show');
+                }
+            });
+        });
+
+        // Card number formatting
+        const cardNumber = document.getElementById('cardNumber');
+        cardNumber.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            value = value.replace(/[^0-9]/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+            
+            // Update card preview
+            document.getElementById('cardDisplay').textContent = formattedValue || '•••• •••• •••• ••••';
+            
+            // Detect card type
+            detectCardBrand(value);
+        });
+
+        // Card expiry formatting
+        const cardExpiry = document.getElementById('cardExpiry');
+        cardExpiry.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+            document.getElementById('expiryDisplay').textContent = value || 'MM/YY';
+        });
+
+        // CVV (numbers only)
+        const cardCVV = document.getElementById('cardCVV');
+        cardCVV.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Cardholder name
+        const cardName = document.getElementById('cardName');
+        cardName.addEventListener('input', function(e) {
+            document.getElementById('nameDisplay').textContent = e.target.value.toUpperCase() || 'YOUR NAME';
+        });
+
+        
+
+        // Detect card brand
+        function detectCardBrand(number) {
+            const brandIcon = document.getElementById('brandIcon');
+            const patterns = {
+                visa: /^4/,
+                mastercard: /^5[1-5]/,
+                amex: /^3[47]/,
+                discover: /^6(?:011|5)/
+            };
+
+            for (let [brand, pattern] of Object.entries(patterns)) {
+                if (pattern.test(number)) {
+                    const icons = {
+                        visa: 'fab fa-cc-visa',
+                        mastercard: 'fab fa-cc-mastercard',
+                        amex: 'fab fa-cc-amex',
+                        discover: 'fab fa-cc-discover'
+                    };
+                    brandIcon.className = icons[brand];
+                    return;
+                }
+            }
+            brandIcon.className = 'fas fa-credit-card';
+        }
+
+       
+        // Hide overlay
+        function hideProcessing() {
+            setTimeout(() => {
+                document.getElementById('processingOverlay').style.display = 'none';
+            }, 2000);
+        }
+
+     
+        // Validate card
+        function validateCard() {
+            const number = cardNumber.value.replace(/\s/g, '');
+            const expiry = cardExpiry.value;
+            const cvv = cardCVV.value;
+            const name = cardName.value;
+
+            if (number.length < 13) {
+                alert('Please enter a valid card number');
+                return false;
+            }
+            if (expiry.length < 5) {
+                alert('Please enter expiry date (MM/YY)');
+                return false;
+            }
+            if (cvv.length < 3) {
+                alert('Please enter CVV');
+                return false;
+            }
+            if (!name.trim()) {
+                alert('Please enter cardholder name');
+                return false;
+            }
+            return true;
+        }
+
+      
+        // Process Card Payment (Simulated with Stripe-like flow)
+        function processCardPayment(amount) {
+            showProcessing('Processing card payment...', 'Please wait');
+            
+            // Simulate Stripe tokenization and charge
+            setTimeout(() => {
+                showSuccess('Payment Successful!', `$${amount.toFixed(2)} charged to card`);
+                hideProcessing();
+                
+                setTimeout(() => {
+                    const cardLast4 = cardNumber.value.replace(/\s/g, '').slice(-4);
+                    alert(`✅ Order Confirmed!\n\nPayment Method: Card\nCard: •••• ${cardLast4}\nAmount: $${amount.toFixed(2)}\n\nYou will receive a confirmation email shortly.`);
+                }, 2500);
+            }, 3000);
+        }
+
+        
+    </script>
+
+        </body>
