@@ -49,7 +49,7 @@ Render will host your Python server and your Database.
         - `MAIL_PASSWORD`: `axma yqnb esgc leky`
         - `SECRET_KEY`: (Generate a random string)
     - Click **Create Web Service**.
-4.  **Wait**: Render will build your app. Once it says "Live", copy the URL (e.g., `https://feza-shop-backend.onrender.com`).
+4.  **Wait**: Render will build your app. Once it says "Live",THE URL:`https://feza-shop-backend.onrender.com`.
 
 ---
 
