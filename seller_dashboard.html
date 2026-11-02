@@ -829,19 +829,19 @@
 
         function getProductImage(productName) {
             const imageMap = {
-                'Blue': 'long sleeved blue.png',
-                'Orange': 'Long sleeved orange.png',
-                'Polo': 'Tshirt.png',
-                'Trouser': 'sports trouser.png',
-                'Mug': 'mug.png',
-                'Pens': 'pens.png',
-                'Key': 'key_holder.png',
-                'Clock': 'clock.png'
+                'Blue': 'Images/long sleeved blue.png',
+                'Orange': 'Images/Long sleeved orange.png',
+                'Polo': 'Images/Tshirt.png',
+                'Trouser': 'Images/sports trouser.png',
+                'Mug': 'Images/mug.png',
+                'Pens': 'Images/pens.png',
+                'Key': 'Images/key_holder.png',
+                'Clock': 'Images/clock.png'
             };
             for (let key in imageMap) {
                 if (productName.includes(key)) return imageMap[key];
             }
-            return 'assets/product-placeholder.png';
+            return 'Images/feza-logo.png';
         }
 
         function exportInventory() {
