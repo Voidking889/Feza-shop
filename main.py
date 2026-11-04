@@ -3,10 +3,11 @@ import json
 import uuid
 import time
 import asyncio
+from pathlib import Path
 from datetime import datetime
 from fastapi import FastAPI, Request, BackgroundTasks, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 import stripe
 from dotenv import load_dotenv
@@ -15,7 +16,8 @@ from app.services.email_service import send_invoice_email, send_topup_pin_email
 # In-memory storage for transaction verification pins
 verification_pins = {}
 
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(BASE_DIR / ".env")
 
 app = FastAPI()
 
@@ -27,11 +29,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-stripe_secret = os.getenv('STRIPE_SECRET_KEY', 'sk_test_51SEtVzP59ObtQXGRUTV8YFlh5xeXoBd6drzBFz86DL9dtgfBmxuHbHvvz6jUO3PqdYYn5sWh2HSAsISaWLQUUTl800RPwU6qvC')
-stripe.api_key = stripe_secret
-
-if not os.getenv('STRIPE_SECRET_KEY'):
-    print('[WARN] Using fallback Stripe test secret from code. Set STRIPE_SECRET_KEY in .env for security.')
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+if not stripe.api_key:
+    print("[WARN] Stripe is disabled. Set STRIPE_SECRET_KEY in .env to enable payments.")
 
 NMB_API_KEY = os.getenv('NMB_API_KEY')
 NMB_CONSUMER_SECRET = os.getenv('NMB_CONSUMER_SECRET')
@@ -40,16 +40,28 @@ NMB_CONSUMER_ID = os.getenv('NMB_CONSUMER_ID')
 transactions = {}
 invoices = {}
 
+@app.middleware("http")
+async def protect_private_files(request, call_next):
+    if any(part.startswith(".") for part in request.url.path.strip("/").split("/")):
+        return Response(status_code=404)
+    return await call_next(request)
+
 @app.get("/payment")
 async def get_payment():
-    return FileResponse("feza-pay.html")
+    return FileResponse(BASE_DIR / "feza-pay.html")
 
 @app.get("/test-page")
 async def get_test_page():
-    return FileResponse("test.html")
+    return FileResponse(BASE_DIR / "test.html")
 
 @app.post("/create-payment-intent")
 async def create_payment_intent(request: Request):
+    if not stripe.api_key:
+        return JSONResponse(status_code=503, content={
+            "status": "failed",
+            "message": "Stripe is not configured on the server."
+        })
+
     try:
         data = await request.json()
         amount = data.get('amount')
@@ -57,10 +69,9 @@ async def create_payment_intent(request: Request):
         customer_email = data.get('customerEmail')
 
         if not amount or not currency:
-            return JSONResponse(content={
-                "status": "success",
-                "clientSecret": f"pi_{int(time.time() * 1000)}_secret_abcdef1234567890abcdef1234567890",
-                "paymentIntentId": f"pi_{int(time.time() * 1000)}"
+            return JSONResponse(status_code=400, content={
+                "status": "failed",
+                "message": "A positive amount and currency are required."
             })
             
         payment_intent = stripe.PaymentIntent.create(
@@ -393,5 +404,4 @@ async def verify_topup_pin(request: Request):
         return JSONResponse(status_code=400, content={"status": "failed", "message": "Invalid PIN code."})
 
 # Mount the static files at the end to act as a catch-all route, serving from root
-app.mount("/", StaticFiles(directory=".", html=True), name="static")
-
+app.mount("/", StaticFiles(directory=BASE_DIR, html=True), name="static")

@@ -3,16 +3,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
+const path = require('path');
 const Stripe = require('stripe');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Stripe client: uses .env if available, otherwise falls back to provided test key
-const stripeSecret = process.env.STRIPE_SECRET_KEY || 'sk_test_51SEtVzP59ObtQXGRUTV8YFlh5xeXoBd6drzBFz86DL9dtgfBmxuHbHvvz6jUO3PqdYYn5sWh2HSAsISaWLQUUTl800RPwU6qvC';
-if (!process.env.STRIPE_SECRET_KEY) {
-    console.warn('[WARN] Using fallback Stripe test secret from code. Set STRIPE_SECRET_KEY in .env for security.');
+// Stripe payments are disabled until a server-side key is configured.
+const stripe = process.env.STRIPE_SECRET_KEY
+    ? new Stripe(process.env.STRIPE_SECRET_KEY)
+    : null;
+if (!stripe) {
+    console.warn('[WARN] Stripe is disabled. Set STRIPE_SECRET_KEY in .env to enable payments.');
 }
-const stripe = new Stripe(stripeSecret);
 
 // NMB API credentials (moved to env)
 const NMB_API_KEY = process.env.NMB_API_KEY;
@@ -31,38 +33,42 @@ app.use(cors());
 // Use body-parser middleware to parse JSON requests
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+    if (req.path.split('/').some(part => part.startsWith('.'))) {
+        return res.sendStatus(404);
+    }
+    next();
+});
+
 // Serve static files from the root directory
 app.use(express.static(__dirname));
 
 // Direct routes to HTML files
 app.get('/payment', (req, res) => {
-    res.sendFile(__dirname + '/startbootstrap-shop-homepage-gh-pages/feza-pay.html');
+    res.sendFile(path.join(__dirname, 'feza-pay.html'));
 });
 
 app.get('/test-page', (req, res) => {
-    res.sendFile(__dirname + '/test.html');
+    res.sendFile(path.join(__dirname, 'test.html'));
 });
 
 // --- Stripe: Create PaymentIntent (real) ---
 
 app.post('/create-payment-intent', async (req, res) => {
+    if (!stripe) {
+        return res.status(503).json({ status: 'failed', message: 'Stripe is not configured on the server.' });
+    }
+
     try {
         const { amount, currency, customerEmail } = req.body;
-        if (!stripe) {
-            return res.status(500).json({ status: 'failed', message: 'Stripe not configured on server.' });
-        }
-        if (!amount || !currency) {
-            return res.status(200).json({
-                status: 'success',
-                // Fallback mock client secret when request payload is incomplete
-                clientSecret: `pi_${Date.now()}_secret_abcdef1234567890abcdef1234567890`,
-                paymentIntentId: `pi_${Date.now()}`
-            });
+        if (!Number.isSafeInteger(Number(amount)) || Number(amount) <= 0 ||
+            typeof currency !== 'string' || !currency.trim()) {
+            return res.status(400).json({ status: 'failed', message: 'A positive integer amount and currency are required.' });
         }
 
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: Math.round(amount),
-            currency: currency,
+            amount: Number(amount),
+            currency: currency.trim().toLowerCase(),
             // Do not send receipt_email to avoid Stripe email validation errors
             automatic_payment_methods: { enabled: true }
         });
@@ -73,15 +79,8 @@ app.post('/create-payment-intent', async (req, res) => {
             paymentIntentId: paymentIntent.id
         });
     } catch (err) {
-        console.error('Stripe error (returning mock for UI):', err?.message || err);
-        const mockIntentId = 'pi_' + Date.now() + Math.random().toString(36).substr(2, 10);
-        const mockClientSecret = `${mockIntentId}_secret_abcdef1234567890abcdef1234567890`;
-        return res.status(200).json({
-            status: 'success',
-            clientSecret: mockClientSecret,
-            paymentIntentId: mockIntentId,
-            note: 'Mock client_secret returned due to Stripe error. For real payments, fix server config.'
-        });
+        console.error('Stripe error:', err?.message || err);
+        return res.status(502).json({ status: 'failed', message: 'Stripe could not create the payment intent.' });
     }
 });
 

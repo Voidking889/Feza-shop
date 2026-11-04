@@ -1,4 +1,8 @@
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "MyFeza Backend"
@@ -11,7 +15,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # Database 
-    DATABASE_URL: str = "sqlite+aiosqlite:///./test.db"
+    DATABASE_URL: str = f"sqlite+aiosqlite:///{(BASE_DIR / 'data' / 'feza_shop.sqlite3').as_posix()}"
 
     # API Keys
     STRIPE_SECRET_KEY: str = ""
@@ -31,6 +35,6 @@ class Settings(BaseSettings):
     MAIL_SERVER: str = "smtp.gmail.com"
     MAIL_FROM_NAME: str = "Feza Shop"
 
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="allow")
+    model_config = SettingsConfigDict(env_file=BASE_DIR / ".env", case_sensitive=True, extra="allow")
 
 settings = Settings()

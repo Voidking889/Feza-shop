@@ -1,5 +1,6 @@
 # Environments
 .env
+.secrets/
 
 # Python compilation
 __pycache__/

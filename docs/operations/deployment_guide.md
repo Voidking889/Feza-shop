@@ -45,8 +45,8 @@ Render will host your Python server and your Database.
     - **Environment Variables** (Click "Advanced"):
         - `DATABASE_URL`: (Paste your Internal Database URL)
         - `STRIPE_SECRET_KEY`: (Your Stripe Secret Key)
-        - `MAIL_USERNAME`: `kideinstein33@gmail.com`
-        - `MAIL_PASSWORD`: `axma yqnb esgc leky`
+        - `MAIL_USERNAME`: (Set your SMTP username in the hosting environment)
+        - `MAIL_PASSWORD`: (Set your SMTP app password in the hosting environment)
         - `SECRET_KEY`: (Generate a random string)
     - Click **Create Web Service**.
 4.  **Wait**: Render will build your app. Once it says "Live",THE URL:`https://feza-shop-backend.onrender.com`.

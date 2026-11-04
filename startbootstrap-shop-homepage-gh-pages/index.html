@@ -378,6 +378,7 @@
             right: 20px;
         }
     </style>
+    <link rel="stylesheet" href="../css/gradient-theme.css" />
 </head>
 
 <body>
@@ -394,9 +395,9 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="New_Arrivals.html">New Arrivals</a></li>
-                    <li class="nav-item"><a class="nav-link" href="Shopping_Analytics.html">My Shopping History</a></li>
-                    <li class="nav-item"><a class="nav-link" href="Account_centre.html">Account</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../New_Arrivals.html">New Arrivals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../Shopping_Analytics.html">My Shopping History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../Account_centre.html">Account</a></li>
                 </ul>
                 <button class="btn cart-btn" type="button" data-bs-toggle="modal" data-bs-target="#cartModal">
                     <i class="bi-cart-fill me-2"></i>
@@ -442,7 +443,7 @@
                         <h5 class="mb-0">Total: $<span id="cartTotal">0.00</span></h5>
                         <div>
                             <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">Continue Shopping</button>
-                            <button type="button" href="feza-pay.html" class="btn" style="background: var(--primary-orange); color: white;"  onclick="payRoll()">Checkout</button>
+                            <button type="button" class="btn" style="background: var(--primary-orange); color: white;" onclick="payRoll()">Checkout</button>
                         </div>
                     </div>
                 </div>
@@ -603,7 +604,7 @@
             }
 
             // Redirect to feza-pay.html
-            window.location.href = 'feza-pay.html';
+            window.location.href = '../feza-pay.html';
         }
 
         // Render products
@@ -762,55 +763,5 @@
         updateCartUI(); 
     </script>
 
-    <!-- Pool Server Integration -->
-    <script src="js/pool-client.js"></script>
-    <script>
-        // Initialize Feza Pool Client for cross-page data synchronization
-        let fezaPoolClient;
-        
-        function initializePoolClient() {
-            try {
-                fezaPoolClient = new FezaPoolClient();
-                
-                // Listen for real-time updates
-                fezaPoolClient.on('analytics', (data) => {
-                    console.log('Analytics update received:', data);
-                    // Update any analytics displays on the homepage if needed
-                });
-                
-                fezaPoolClient.on('newTransaction', (transaction) => {
-                    console.log('New transaction received:', transaction);
-                    // Show notification for new transactions
-                    showNotification(`New transaction: $${transaction.amount}`);
-                });
-                
-                fezaPoolClient.on('connected', () => {
-                    console.log('Connected to Feza Pool Server');
-                });
-                
-                fezaPoolClient.on('disconnected', () => {
-                    console.log('Disconnected from Feza Pool Server');
-                });
-                
-                // Connect to the server
-                fezaPoolClient.connect();
-                
-            } catch (error) {
-                console.log('Pool server not available, running in offline mode');
-            }
-        }
-        
-        // Initialize pool client when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(initializePoolClient, 1000); // Delay to ensure server is ready
-        });
-        
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', function() {
-            if (fezaPoolClient) {
-                fezaPoolClient.disconnect();
-            }
-        });
-    </script>
 </body>
 </html>
